@@ -639,7 +639,7 @@
         let joystickTouchId = null;
         let joystickInput = { x: 0, y: 0 };
         const JOYSTICK_THUMB_MAX = 35;
-        const JOYSTICK_SENSITIVITY = 0.3; // Reduce sensitivity (0.0 to 1.0)
+        const JOYSTICK_SENSITIVITY = 0.2; // Reduce sensitivity (0.0 to 1.0)
 
         // Power levels tracking
         let powerLevels = {};
@@ -1230,11 +1230,18 @@
                 player.y += (dy / len) * player.speed;
             }
             
-            // Wrap
-            if (player.y < -player.radius) player.y = canvas.height + player.radius;
-            if (player.y > canvas.height + player.radius) player.y = -player.radius;
-            if (player.x < -player.radius) player.x = canvas.width + player.radius;
-            if (player.x > canvas.width + player.radius) player.x = -player.radius;
+            // Screen boundaries
+            if (isTouchDevice) {
+                // Mobile: clamp to screen edges
+                player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+                player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
+            } else {
+                // Desktop: wrap around screen
+                if (player.y < -player.radius) player.y = canvas.height + player.radius;
+                if (player.y > canvas.height + player.radius) player.y = -player.radius;
+                if (player.x < -player.radius) player.x = canvas.width + player.radius;
+                if (player.x > canvas.width + player.radius) player.x = -player.radius;
+            }
             
             // Regen
             if (player.regen > 0) player.health = Math.min(player.maxHealth, player.health + player.regen * deltaTime / 1000);
