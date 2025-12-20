@@ -640,6 +640,7 @@
         let joystickInput = { x: 0, y: 0 };
         const JOYSTICK_THUMB_MAX = 35;
         const JOYSTICK_SENSITIVITY = 0.2; // Reduce sensitivity (0.0 to 1.0)
+        const MOBILE_SPEED_MODIFIER = 0.7; // Mobile moves slower (0.0 to 1.0)
 
         // Power levels tracking
         let powerLevels = {};
@@ -648,7 +649,7 @@
             { id: 'damage', icon: '⚔️', name: 'Dano', desc: '+10 de dano', apply: () => player.damage += 10 },
             { id: 'firerate', icon: '🔫', name: 'Cadência', desc: 'Atira mais rápido', apply: () => player.fireRate = Math.max(100, player.fireRate - 50) },
             { id: 'projectile', icon: '🎯', name: 'Projétil', desc: '+1 projétil', apply: () => player.projectileCount += 1 },
-            { id: 'speed', icon: '💨', name: 'Velocidade', desc: 'Move mais rápido', apply: () => player.speed += 0.7 },
+            { id: 'speed', icon: '💨', name: 'Velocidade', desc: 'Move mais rápido', apply: () => { if (!isTouchDevice) player.speed += 0.7; } },
             { id: 'health', icon: '❤️', name: 'Vida', desc: '+25 vida máxima', apply: () => { player.maxHealth += 25; player.health += 25; }},
             { id: 'magnet', icon: '🧲', name: 'Ímã', desc: 'Coleta XP de longe', apply: () => player.magnet += 25 },
             { id: 'projspeed', icon: '🚀', name: 'Proj. Rápido', desc: 'Projéteis mais rápidos', apply: () => player.projectileSpeed += 1.5 },
@@ -667,6 +668,7 @@
                 enemies = [];
             }},
             { icon: '⚡', name: 'VELOCIDADE!', apply: () => {
+                if (isTouchDevice) return; // Skip speed boost on mobile
                 player.speed += 5;
                 setTimeout(() => player.speed = Math.max(4, player.speed - 5), 10000);
             }},
@@ -1226,8 +1228,9 @@
 
             if (dx !== 0 || dy !== 0) {
                 const len = Math.hypot(dx, dy);
-                player.x += (dx / len) * player.speed;
-                player.y += (dy / len) * player.speed;
+                const effectiveSpeed = isTouchDevice ? player.speed * MOBILE_SPEED_MODIFIER : player.speed;
+                player.x += (dx / len) * effectiveSpeed;
+                player.y += (dy / len) * effectiveSpeed;
             }
             
             // Screen boundaries
