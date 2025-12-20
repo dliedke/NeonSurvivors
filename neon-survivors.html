@@ -931,6 +931,11 @@
             game.paused = !game.paused;
             document.getElementById('pauseScreen').style.display = game.paused ? 'flex' : 'none';
             document.getElementById('pauseBtn').textContent = game.paused ? '▶️' : '⏸️';
+
+            // Request fullscreen again on mobile when resuming
+            if (!game.paused && isTouchDevice && !document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {});
+            }
         }
 
         document.getElementById('startBtn').onclick = startGame;
