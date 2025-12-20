@@ -1071,11 +1071,23 @@
         }
         
         function spawnTreasure() {
+            // When player is low on health (below 30%), heavily favor full heal power
+            const isLowHealth = player.health < player.maxHealth * 0.3;
+            const LOW_HEALTH_HEAL_CHANCE = 0.7; // 70% chance to get full heal when low health
+
+            let power;
+            if (isLowHealth && Math.random() < LOW_HEALTH_HEAL_CHANCE) {
+                // CURA TOTAL! is at index 3
+                power = superPowers[3];
+            } else {
+                power = superPowers[Math.floor(Math.random() * superPowers.length)];
+            }
+
             treasures.push({
                 x: 50 + Math.random() * (canvas.width - 100),
                 y: 50 + Math.random() * (canvas.height - 100),
                 radius: 20, rotation: 0,
-                power: superPowers[Math.floor(Math.random() * superPowers.length)]
+                power: power
             });
         }
         
