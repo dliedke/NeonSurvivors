@@ -63,7 +63,20 @@
             color: #ff6600;
             text-shadow: 0 0 10px #ff6600;
         }
-        
+
+        #pauseBtn {
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        #pauseBtn:hover {
+            background: #00ffff;
+            color: #0a0a0f;
+            transform: scale(1.1);
+        }
+
         #difficultyPanel {
             position: absolute;
             right: 10px;
@@ -169,7 +182,7 @@
             font-family: 'Press Start 2P', cursive;
         }
         
-        #startScreen, #gameOverScreen, #upgradeScreen {
+        #startScreen, #gameOverScreen, #upgradeScreen, #pauseScreen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 10, 15, 0.95);
@@ -180,7 +193,7 @@
             z-index: 100;
         }
         
-        #startScreen h1, #gameOverScreen h1 {
+        #startScreen h1, #gameOverScreen h1, #pauseScreen h1 {
             font-family: 'Press Start 2P', cursive;
             font-size: 32px;
             color: #ff00ff;
@@ -268,7 +281,7 @@
         .upgrade-btn .level { font-size: 12px; color: #ffff00; margin-bottom: 5px; }
         .upgrade-btn .desc { font-size: 11px; color: #aa88cc; }
         
-        #gameOverScreen { display: none; }
+        #gameOverScreen, #pauseScreen { display: none; }
         
         #finalStats {
             color: #00ffff;
@@ -439,6 +452,7 @@
             <div class="stat-box">⏱️ <span id="time">0:00</span></div>
             <div class="stat-box">🌊 <span id="waveNum">1</span></div>
             <div class="stat-box kills">💀 <span id="kills">0</span></div>
+            <button id="pauseBtn" class="stat-box">⏸️</button>
         </div>
         
         <div id="powerLevels"></div>
@@ -485,6 +499,11 @@
             <h1>💀 GAME OVER 💀</h1>
             <div id="finalStats"></div>
             <button class="btn" id="restartBtn">TENTAR NOVAMENTE</button>
+        </div>
+
+        <div id="pauseScreen">
+            <h1>⏸️ PAUSADO</h1>
+            <button class="btn" id="resumeBtn">CONTINUAR</button>
         </div>
     </div>
 
@@ -895,6 +914,8 @@
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('gameOverScreen').style.display = 'none';
             document.getElementById('upgradeScreen').style.display = 'none';
+            document.getElementById('pauseScreen').style.display = 'none';
+            document.getElementById('pauseBtn').textContent = '⏸️';
 
             initGame();
             gameRunning = true;
@@ -902,8 +923,20 @@
             requestAnimationFrame(gameLoop);
         }
         
+        function togglePause() {
+            if (!gameRunning) return;
+            // Don't allow pause during level up
+            if (document.getElementById('upgradeScreen').style.display === 'flex') return;
+
+            game.paused = !game.paused;
+            document.getElementById('pauseScreen').style.display = game.paused ? 'flex' : 'none';
+            document.getElementById('pauseBtn').textContent = game.paused ? '▶️' : '⏸️';
+        }
+
         document.getElementById('startBtn').onclick = startGame;
         document.getElementById('restartBtn').onclick = startGame;
+        document.getElementById('pauseBtn').onclick = togglePause;
+        document.getElementById('resumeBtn').onclick = togglePause;
         
         document.addEventListener('keydown', e => {
             keys[e.key.toLowerCase()] = true;
@@ -921,6 +954,11 @@
                 } else {
                     document.exitFullscreen();
                 }
+            }
+            // P or Escape to pause
+            if ((e.key === 'p' || e.key === 'P' || e.key === 'Escape') && gameRunning) {
+                e.preventDefault();
+                togglePause();
             }
         });
         document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
