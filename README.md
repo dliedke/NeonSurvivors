@@ -10,14 +10,20 @@ Abra o arquivo `neon-survivors.html` em qualquer navegador moderno. Não requer 
 
 ### Controles
 
-| Ação | Teclado | Controle |
-|------|---------|----------|
-| Mover | `WASD` ou `Setas` | Analógico esquerdo |
-| Tela cheia | `F` ou `F11` | - |
-| Mais inimigos | `+` | 🔼 Triângulo |
-| Menos inimigos | `-` | 🟥 Quadrado |
-| Selecionar/Confirmar | - | 🅰️ Botão A |
-| Navegar upgrades | - | ⬅️ ➡️ D-pad |
+| Ação | Teclado | Controle | Mobile |
+|------|---------|----------|--------|
+| Mover | `WASD` ou `Setas` | Analógico esquerdo | 🕹️ Joystick virtual |
+| Tela cheia | `F` ou `F11` | - | - |
+| Ajustar inimigos | `+` / `-` | 🔼 / 🟥 | Toque na barra SPAWN |
+| Selecionar/Confirmar | - | 🅰️ Botão A | Toque nos botões |
+| Navegar upgrades | - | ⬅️ ➡️ D-pad | Toque no upgrade |
+
+### 📱 Suporte Mobile
+
+O jogo detecta automaticamente dispositivos touch e exibe:
+- **Joystick virtual** no canto inferior esquerdo para movimento
+- **Barra de spawn touch-friendly** - toque diretamente na posição desejada
+- **Botões adaptados** para toque em upgrades e menus
 
 ## ✨ Features
 
@@ -31,6 +37,7 @@ Abra o arquivo `neon-survivors.html` em qualquer navegador moderno. Não requer 
 - 🔊 **Sons procedurais** - Efeitos sonoros gerados com Web Audio API
 - 💥 **Screen shake** - Feedback visual ao tomar dano
 - 📺 **Tela cheia responsiva** - Usa toda a área do navegador
+- 📱 **Suporte mobile** - Joystick virtual e controles touch
 
 ## 🏆 Dicas
 

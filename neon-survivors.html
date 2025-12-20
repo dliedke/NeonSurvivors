@@ -368,7 +368,66 @@
             0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
             50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
         }
-        
+
+        /* Virtual Joystick - Touch Controls */
+        #joystickContainer {
+            position: absolute;
+            bottom: 80px;
+            left: 40px;
+            width: 120px;
+            height: 120px;
+            z-index: 15;
+            pointer-events: none;
+            display: none;
+        }
+
+        #joystickBase {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,0,255,0.2) 0%, rgba(255,0,255,0.1) 100%);
+            border: 3px solid rgba(255, 0, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+            pointer-events: auto;
+            touch-action: none;
+        }
+
+        #joystickThumb {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff00ff 0%, #aa00aa 100%);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 15px #ff00ff;
+            left: 35px;
+            top: 35px;
+            pointer-events: none;
+        }
+
+        #joystickBase.active {
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        #joystickBase.active #joystickThumb {
+            background: radial-gradient(circle, #00ffff 0%, #0088aa 100%);
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        /* Touch-friendly difficulty panel */
+        .touch-device #difficultyBar {
+            width: 30px;
+            height: 180px;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .touch-device .diff-hint {
+            display: none;
+        }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -398,7 +457,14 @@
         <div id="waveDisplay"></div>
         <div id="multiplierDisplay">x1.0</div>
         <div id="bossWarning">⚠️ BOSS! ⚠️</div>
-        
+
+        <!-- Virtual Joystick for Touch Controls -->
+        <div id="joystickContainer">
+            <div id="joystickBase">
+                <div id="joystickThumb"></div>
+            </div>
+        </div>
+
         <div id="startScreen">
             <h1>⚡ NEON<br>SURVIVORS ⚡</h1>
             <button class="btn" id="startBtn">JOGAR</button>
@@ -566,7 +632,14 @@
         let lastTime = 0;
         let gameRunning = false;
         let spawnMultiplier = 1.0; // 0-1 slider
-        
+
+        // Touch Controls
+        let isTouchDevice = false;
+        let joystickActive = false;
+        let joystickTouchId = null;
+        let joystickInput = { x: 0, y: 0 };
+        const JOYSTICK_THUMB_MAX = 35;
+
         // Power levels tracking
         let powerLevels = {};
         
@@ -683,7 +756,131 @@
             spawnMultiplier = Math.max(0.2, Math.min(2, spawnMultiplier + delta));
             updateDifficultyUI();
         }
-        
+
+        // Touch device detection and initialization
+        function initTouchControls() {
+            isTouchDevice = ('ontouchstart' in window) ||
+                            (navigator.maxTouchPoints > 0) ||
+                            (navigator.msMaxTouchPoints > 0);
+
+            if (isTouchDevice) {
+                document.body.classList.add('touch-device');
+                document.getElementById('joystickContainer').style.display = 'block';
+
+                // Update instructions for touch
+                const instructions = document.querySelector('.instructions');
+                if (instructions) {
+                    instructions.innerHTML = `
+                        <span>JOYSTICK</span> para mover<br>
+                        <span>TOQUE</span> na barra para ajustar inimigos<br>
+                        <span>F</span> ou <span>F11</span> para tela cheia
+                    `;
+                }
+
+                setupJoystickListeners();
+                setupSpawnBarTouchListener();
+            }
+        }
+
+        function setupJoystickListeners() {
+            const joystickBase = document.getElementById('joystickBase');
+            const joystickThumb = document.getElementById('joystickThumb');
+
+            function getJoystickCenter() {
+                const rect = joystickBase.getBoundingClientRect();
+                return {
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2
+                };
+            }
+
+            function updateJoystickPosition(touchX, touchY) {
+                const center = getJoystickCenter();
+                let deltaX = touchX - center.x;
+                let deltaY = touchY - center.y;
+
+                const distance = Math.hypot(deltaX, deltaY);
+
+                if (distance > JOYSTICK_THUMB_MAX) {
+                    deltaX = (deltaX / distance) * JOYSTICK_THUMB_MAX;
+                    deltaY = (deltaY / distance) * JOYSTICK_THUMB_MAX;
+                }
+
+                joystickThumb.style.left = (35 + deltaX) + 'px';
+                joystickThumb.style.top = (35 + deltaY) + 'px';
+
+                joystickInput.x = deltaX / JOYSTICK_THUMB_MAX;
+                joystickInput.y = deltaY / JOYSTICK_THUMB_MAX;
+            }
+
+            function resetJoystick() {
+                joystickThumb.style.left = '35px';
+                joystickThumb.style.top = '35px';
+                joystickInput.x = 0;
+                joystickInput.y = 0;
+                joystickActive = false;
+                joystickTouchId = null;
+                joystickBase.classList.remove('active');
+            }
+
+            joystickBase.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                if (joystickTouchId === null) {
+                    const touch = e.changedTouches[0];
+                    joystickTouchId = touch.identifier;
+                    joystickActive = true;
+                    joystickBase.classList.add('active');
+                    updateJoystickPosition(touch.clientX, touch.clientY);
+                }
+            }, { passive: false });
+
+            joystickBase.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const touch = e.changedTouches[i];
+                    if (touch.identifier === joystickTouchId) {
+                        updateJoystickPosition(touch.clientX, touch.clientY);
+                        break;
+                    }
+                }
+            }, { passive: false });
+
+            joystickBase.addEventListener('touchend', function(e) {
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === joystickTouchId) {
+                        resetJoystick();
+                        break;
+                    }
+                }
+            });
+
+            joystickBase.addEventListener('touchcancel', function(e) {
+                resetJoystick();
+            });
+        }
+
+        function setupSpawnBarTouchListener() {
+            const difficultyBar = document.getElementById('difficultyBar');
+
+            function handleSpawnBarTouch(e) {
+                e.preventDefault();
+
+                const touch = e.touches[0] || e.changedTouches[0];
+                const rect = difficultyBar.getBoundingClientRect();
+
+                // Calculate Y position relative to bar (0 = bottom, 1 = top)
+                let relativeY = (rect.bottom - touch.clientY) / rect.height;
+                relativeY = Math.max(0, Math.min(1, relativeY));
+
+                // Map to spawn multiplier range (0.2 to 2.0)
+                spawnMultiplier = 0.2 + relativeY * 1.8;
+                updateDifficultyUI();
+            }
+
+            difficultyBar.addEventListener('touchstart', handleSpawnBarTouch, { passive: false });
+            difficultyBar.addEventListener('touchmove', handleSpawnBarTouch, { passive: false });
+        }
+
         function startGame() {
             initAudio();
             document.getElementById('startScreen').classList.add('hidden');
@@ -1013,7 +1210,13 @@
             
             const gp = getGamepadInput();
             dx += gp.x; dy += gp.y;
-            
+
+            // Add touch joystick input
+            if (joystickActive) {
+                dx += joystickInput.x;
+                dy += joystickInput.y;
+            }
+
             if (dx !== 0 || dy !== 0) {
                 const len = Math.hypot(dx, dy);
                 player.x += (dx / len) * player.speed;
@@ -1340,6 +1543,9 @@
         
         // Init difficulty UI
         updateDifficultyUI();
+
+        // Initialize touch controls
+        initTouchControls();
     </script>
 </body>
 </html>
