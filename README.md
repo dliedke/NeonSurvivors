@@ -4,6 +4,8 @@ Um jogo estilo Vampire Survivors feito em HTML/CSS/JavaScript puro. Sobreviva à
 
 ## 🎮 Como Jogar
 
+- **Jogar online:** <a href="https://dliedke.github.io/NeonSurvivors/neon-survivors.html" target="_blank" rel="noopener noreferrer">Abrir Neon Survivors</a>
+
 Abra o arquivo `neon-survivors.html` em qualquer navegador moderno. Não requer instalação!
 
 ### Controles
