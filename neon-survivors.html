@@ -674,10 +674,15 @@
             { id: 'projspeed', icon: '🚀', name: 'Proj. Rápido', desc: 'Projéteis mais rápidos', apply: () => player.projectileSpeed += 1.5 },
             { id: 'regen', icon: '💚', name: 'Regeneração', desc: 'Recupera vida', apply: () => player.regen += 0.4 },
             { id: 'pierce', icon: '🔥', name: 'Penetração', desc: 'Projéteis atravessam', apply: () => player.projectilePierce += 1 },
+            { id: 'lifesteal', icon: '🧛', name: 'Vampirismo', desc: '+3 HP por kill', apply: () => player.lifesteal = (player.lifesteal || 0) + 3 },
+            { id: 'multihit', icon: '⚡', name: 'Multi-Hit', desc: 'Ricochete +1', apply: () => player.projectileBounce = (player.projectileBounce || 0) + 1 },
+            { id: 'explosion', icon: '💥', name: 'Explosão', desc: 'Inimigos explodem', apply: () => player.explodeOnKill = (player.explodeOnKill || 0) + 20 },
+            { id: 'critchance', icon: '🎯', name: 'Crítico', desc: '15% chance 2x dano', apply: () => player.critChance = (player.critChance || 0) + 0.15 },
+            { id: 'orbsize', icon: '🧲', name: 'XP++', desc: '+20% XP coletado', apply: () => player.xpBonus = (player.xpBonus || 1) * 1.2 },
         ];
         
         const superPowers = [
-            { icon: '💣', name: 'EXPLOSÃO!', apply: () => { 
+            { icon: '💣', name: 'EXPLOSÃO!', apply: () => {
                 enemies.forEach(e => {
                     createParticles(e.x, e.y, e.color, 15);
                     xpOrbs.push({ x: e.x, y: e.y, xp: e.xp, radius: 8 });
@@ -685,11 +690,6 @@
                     if (e.isBoss) playSound('bossdeath');
                 });
                 enemies = [];
-            }},
-            { icon: '⚡', name: 'VELOCIDADE!', apply: () => {
-                if (isTouchDevice) return; // Skip speed boost on mobile
-                player.speed += 5;
-                setTimeout(() => player.speed = Math.max(4, player.speed - 5), 10000);
             }},
             { icon: '🛡️', name: 'ESCUDO!', apply: () => {
                 player.invincible = true;
@@ -708,9 +708,37 @@
                 setTimeout(() => player.projectileCount = Math.max(1, player.projectileCount - 5), 15000);
             }},
         ];
-        
+
+        const temporaryPowerups = [
+            { icon: '💎', name: '+XP', color: '#00ffff', apply: () => player.xp += 30 },
+            { icon: '⚡', name: 'Tiro Rápido', color: '#ffff00', apply: () => {
+                if (!player.rapidFireActive) {
+                    player.rapidFireActive = true;
+                    player.fireRate = Math.max(50, player.fireRate - 200);
+                    setTimeout(() => {
+                        player.fireRate = Math.min(450, player.fireRate + 200);
+                        player.rapidFireActive = false;
+                    }, 5000);
+                }
+            }},
+            { icon: '🌟', name: 'Estrela', color: '#ffffff', apply: () => {
+                enemies.forEach(e => e.health *= 0.5);
+            }},
+            { icon: '💰', name: 'Moedas', color: '#ffd700', apply: () => {
+                for(let i=0; i<5; i++) {
+                    xpOrbs.push({
+                        x: player.x + (Math.random()-0.5)*100,
+                        y: player.y + (Math.random()-0.5)*100,
+                        xp: 5, radius: 8
+                    });
+                }
+            }},
+        ];
+
+        let miniPowerups = [];
+
         function initGame() {
-            game = { time: 0, kills: 0, spawnRate: 2500, lastSpawn: 0, difficulty: 1, paused: false, lastTreasure: 0, lastBoss: 0, bossesKilled: 0 };
+            game = { time: 0, kills: 0, spawnRate: 2500, lastSpawn: 0, difficulty: 1, paused: false, lastTreasure: 0, lastBoss: 0, bossesKilled: 0, lastMiniPowerup: 0 };
             
             combo = 0;
             maxCombo = 0;
@@ -736,6 +764,7 @@
             particles = [];
             damageNumbers = [];
             treasures = [];
+            miniPowerups = [];
             powerLevels = {};
             
             trees = [];
@@ -906,8 +935,8 @@
         function startGame() {
             initAudio();
 
-            // Request fullscreen on mobile devices
-            if (isTouchDevice && !document.fullscreenElement) {
+            // Request fullscreen on all devices
+            if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {});
             }
 
@@ -932,8 +961,8 @@
             document.getElementById('pauseScreen').style.display = game.paused ? 'flex' : 'none';
             document.getElementById('pauseBtn').textContent = game.paused ? '▶️' : '⏸️';
 
-            // Request fullscreen again on mobile when resuming
-            if (!game.paused && isTouchDevice && !document.fullscreenElement) {
+            // Request fullscreen again when resuming
+            if (!game.paused && !document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {});
             }
         }
@@ -1064,12 +1093,15 @@
             }
             
             const types = [
-                { radius: 15, speed: 1.2 + game.difficulty * 0.15, health: 25, color: '#ff4444', xp: 1 },
-                { radius: 25, speed: 0.8 + game.difficulty * 0.1, health: 60, color: '#ff8800', xp: 3 },
-                { radius: 10, speed: 2.5 + game.difficulty * 0.2, health: 12, color: '#ffff00', xp: 1 },
+                { radius: 15, speed: 1.2 + game.difficulty * 0.15, health: 25, color: '#ff4444', xp: 2 },
+                { radius: 25, speed: 0.8 + game.difficulty * 0.1, health: 60, color: '#ff8800', xp: 4 },
+                { radius: 10, speed: 2.5 + game.difficulty * 0.2, health: 12, color: '#ffff00', xp: 2 },
+                { radius: 35, speed: 0.5 + game.difficulty * 0.05, health: 150, color: '#4444ff', xp: 5 }, // TANQUE
+                { radius: 12, speed: 3.5 + game.difficulty * 0.25, health: 8, color: '#ff00ff', xp: 2 }, // VELOZ ELITE
+                { radius: 20, speed: 1.0 + game.difficulty * 0.12, health: 40, color: '#00ffff', xp: 2 }, // MÉDIO RESISTENTE
             ];
-            
-            const weights = [60, 25, 15];
+
+            const weights = [35, 20, 15, 20, 10];
             let r = Math.random() * 100, typeIndex = 0;
             for (let i = 0; i < weights.length; i++) { r -= weights[i]; if (r <= 0) { typeIndex = i; break; } }
             
@@ -1099,10 +1131,10 @@
             setTimeout(() => warning.classList.remove('show'), 2000);
             
             const bossLevel = game.bossesKilled + 1;
-            
+
             enemies.push({
                 x, y,
-                radius: 50 + bossLevel * 5,
+                radius: Math.min(90, 50 + bossLevel * 5),
                 speed: 0.6 + bossLevel * 0.1,
                 health: 500 + bossLevel * 200,
                 maxHealth: 500 + bossLevel * 200,
@@ -1120,8 +1152,8 @@
 
             let power;
             if (isLowHealth && Math.random() < LOW_HEALTH_HEAL_CHANCE) {
-                // CURA TOTAL! is at index 3
-                power = superPowers[3];
+                // CURA TOTAL! is at index 2
+                power = superPowers[2];
             } else {
                 power = superPowers[Math.floor(Math.random() * superPowers.length)];
             }
@@ -1308,7 +1340,20 @@
             const now = performance.now();
             if (now - game.lastSpawn > game.spawnRate) { spawnEnemy(); game.lastSpawn = now; }
             if (now - game.lastTreasure > 15000 + Math.random() * 10000) { spawnTreasure(); game.lastTreasure = now; }
-            
+
+            // Mini power-ups spawn every 8-12 seconds
+            if (now - game.lastMiniPowerup > 8000 + Math.random() * 4000) {
+                const powerup = temporaryPowerups[Math.floor(Math.random() * temporaryPowerups.length)];
+                miniPowerups.push({
+                    x: 50 + Math.random() * (canvas.width - 100),
+                    y: 50 + Math.random() * (canvas.height - 100),
+                    radius: 12,
+                    power: powerup,
+                    pulse: 0
+                });
+                game.lastMiniPowerup = now;
+            }
+
             // Boss spawn every 45 seconds
             if (now - game.lastBoss > 45000) { spawnBoss(); game.lastBoss = now; }
             
@@ -1327,7 +1372,20 @@
                 }
                 return true;
             });
-            
+
+            // Mini powerups
+            miniPowerups.forEach(p => p.pulse += 0.1);
+            miniPowerups = miniPowerups.filter(p => {
+                if (Math.hypot(p.x - player.x, p.y - player.y) < p.radius + player.radius) {
+                    p.power.apply();
+                    showPowerup(p.power.icon + ' ' + p.power.name);
+                    createParticles(p.x, p.y, p.power.color, 10);
+                    playSound('xp');
+                    return false;
+                }
+                return true;
+            });
+
             shoot();
             
             // Projectiles
@@ -1336,21 +1394,28 @@
                 for (let i = enemies.length - 1; i >= 0; i--) {
                     const e = enemies[i];
                     if (Math.hypot(p.x - e.x, p.y - e.y) < p.radius + e.radius) {
-                        e.health -= p.damage;
-                        showDamage(e.x, e.y - e.radius, p.damage, e.isBoss);
+                        // Critical hit chance
+                        let damage = p.damage;
+                        let isCrit = false;
+                        if (player.critChance && Math.random() < player.critChance) {
+                            damage *= 2;
+                            isCrit = true;
+                        }
+                        e.health -= damage;
+                        showDamage(e.x, e.y - e.radius, damage, isCrit);
                         createParticles(p.x, p.y, '#00ffff', 3);
                         playSound('hit');
                         
                         if (e.health <= 0) {
                             createParticles(e.x, e.y, e.color, e.isBoss ? 30 : 10);
                             
-                            // Combo system - só conta se matou de perto (distância < 200)
+                            // Combo system - só conta se matou de perto (distância < 350)
                             const distToPlayer = Math.hypot(e.x - player.x, e.y - player.y);
-                            if (distToPlayer < 200) {
+                            if (distToPlayer < 350) {
                                 combo++;
                                 if (combo > maxCombo) maxCombo = combo;
-                                comboTimer = 2500;
-                                xpMultiplier = Math.min(10, 1 + Math.floor(combo / 5) * 0.5);
+                                comboTimer = 3200;
+                                xpMultiplier = 1 + Math.floor(combo / 3) * 0.5;
                             }
                             
                             // Wave system
@@ -1363,26 +1428,89 @@
                                 // Bonus: heal on wave complete
                                 player.health = Math.min(player.maxHealth, player.health + 15);
                                 playSound('levelup');
+
+                                // Special events every 3 waves
+                                if (wave % 3 === 0) {
+                                    const events = [
+                                        {
+                                            name: 'HORDA!',
+                                            effect: () => {
+                                                for(let i=0; i<15; i++) setTimeout(() => spawnEnemy(), i*100);
+                                            }
+                                        },
+                                        {
+                                            name: 'ELITE!',
+                                            effect: () => {
+                                                for(let i=0; i<3; i++) {
+                                                    enemies.push({
+                                                        x: Math.random()*canvas.width,
+                                                        y: -30,
+                                                        radius: 30, speed: 1.5 + game.difficulty * 0.1,
+                                                        health: 150 + game.difficulty * 30,
+                                                        maxHealth: 150 + game.difficulty * 30,
+                                                        color: '#00ffff', xp: 8, isBoss: false
+                                                    });
+                                                }
+                                            }
+                                        },
+                                        {
+                                            name: 'CHUVA DE XP!',
+                                            effect: () => {
+                                                for(let i=0; i<30; i++) {
+                                                    xpOrbs.push({
+                                                        x: Math.random()*canvas.width,
+                                                        y: Math.random()*canvas.height,
+                                                        xp: 3, radius: 8
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    ];
+                                    const event = events[Math.floor(Math.random()*events.length)];
+                                    const el = document.getElementById('waveDisplay');
+                                    el.textContent = `⚡ ${event.name} ⚡`;
+                                    el.classList.remove('show');
+                                    void el.offsetWidth;
+                                    el.classList.add('show');
+                                    setTimeout(event.effect, 1000);
+                                }
                             }
                             
+                            // Lifesteal
+                            if (player.lifesteal) {
+                                player.health = Math.min(player.maxHealth, player.health + player.lifesteal);
+                            }
+
+                            // Explosion on kill
+                            if (player.explodeOnKill) {
+                                enemies.forEach(other => {
+                                    if (Math.hypot(other.x - e.x, other.y - e.y) < player.explodeOnKill) {
+                                        other.health -= player.damage * 0.3;
+                                    }
+                                });
+                                createParticles(e.x, e.y, '#ff8800', 15);
+                            }
+
                             // Boss drops more XP orbs
                             if (e.isBoss) {
                                 for (let j = 0; j < 10; j++) {
-                                    xpOrbs.push({ 
-                                        x: e.x + (Math.random() - 0.5) * 50, 
-                                        y: e.y + (Math.random() - 0.5) * 50, 
-                                        xp: Math.ceil(e.xp * xpMultiplier / 10), 
-                                        radius: 10 
+                                    const xpValue = Math.ceil(e.xp * xpMultiplier * (player.xpBonus || 1) / 10);
+                                    xpOrbs.push({
+                                        x: e.x + (Math.random() - 0.5) * 50,
+                                        y: e.y + (Math.random() - 0.5) * 50,
+                                        xp: xpValue,
+                                        radius: 10
                                     });
                                 }
                                 game.bossesKilled++;
                                 playSound('bossdeath');
                                 shake(20);
                             } else {
-                                xpOrbs.push({ x: e.x, y: e.y, xp: Math.ceil(e.xp * xpMultiplier), radius: 8 });
+                                const xpValue = Math.ceil(e.xp * xpMultiplier * (player.xpBonus || 1));
+                                xpOrbs.push({ x: e.x, y: e.y, xp: xpValue, radius: 8 });
                                 playSound('kill');
                             }
-                            
+
                             enemies.splice(i, 1);
                             game.kills++;
                         }
@@ -1426,7 +1554,7 @@
                     while (player.xp >= player.xpToLevel) {
                         player.xp -= player.xpToLevel;
                         player.level++;
-                        player.xpToLevel = Math.floor(player.xpToLevel * 1.5);
+                        player.xpToLevel = Math.floor(player.xpToLevel * 1.35);
                         levelUp();
                     }
                     return false;
@@ -1510,7 +1638,31 @@
                 ctx.shadowBlur = 0;
                 ctx.restore();
             });
-            
+
+            // Mini powerups
+            miniPowerups.forEach(p => {
+                const scale = 1 + Math.sin(p.pulse) * 0.15;
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.scale(scale, scale);
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = p.power.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.power.color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#000';
+                ctx.fillText(p.power.icon, 0, 0);
+                ctx.restore();
+            });
+
             // Particles
             particles.forEach(p => { ctx.globalAlpha = p.life; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill(); });
             ctx.globalAlpha = 1;
