@@ -937,7 +937,15 @@
 
             // Request fullscreen on all devices
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {});
+                document.documentElement.requestFullscreen().then(() => {
+                    // Lock to landscape on mobile after fullscreen
+                    if (isTouchDevice && screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch(err => {});
+                    }
+                }).catch(err => {});
+            } else if (isTouchDevice && screen.orientation && screen.orientation.lock) {
+                // Already in fullscreen, just lock orientation
+                screen.orientation.lock('landscape').catch(err => {});
             }
 
             document.getElementById('startScreen').classList.add('hidden');
@@ -963,7 +971,15 @@
 
             // Request fullscreen again when resuming
             if (!game.paused && !document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {});
+                document.documentElement.requestFullscreen().then(() => {
+                    // Lock to landscape on mobile after fullscreen
+                    if (isTouchDevice && screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch(err => {});
+                    }
+                }).catch(err => {});
+            } else if (!game.paused && isTouchDevice && screen.orientation && screen.orientation.lock) {
+                // Already in fullscreen, just ensure landscape
+                screen.orientation.lock('landscape').catch(err => {});
             }
         }
 
