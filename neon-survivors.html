@@ -701,7 +701,11 @@
             { icon: '🔥', name: 'FÚRIA!', apply: () => {
                 const oldDamage = player.damage;
                 player.damage *= 3;
-                setTimeout(() => player.damage = oldDamage, 10000);
+                player.furyActive = true;
+                setTimeout(() => {
+                    player.damage = oldDamage;
+                    player.furyActive = false;
+                }, 10000);
             }},
             { icon: '🌀', name: 'PROJÉTEIS!', apply: () => {
                 player.projectileCount += 5;
@@ -1582,8 +1586,9 @@
             particles = particles.filter(p => { p.x += p.vx; p.y += p.vy; p.life -= 0.03; p.radius *= 0.95; return p.life > 0; });
             damageNumbers = damageNumbers.filter(d => { d.y += d.vy; d.life -= 0.02; return d.life > 0; });
             
-            // Combo timer
-            if (comboTimer > 0) {
+            // Combo timer (congelado durante Tiro Rápido/Fúria, já que o jogador mata rápido demais
+            // para encontrar novos alvos antes do combo expirar)
+            if (comboTimer > 0 && !player.rapidFireActive && !player.furyActive) {
                 comboTimer -= deltaTime;
                 if (comboTimer <= 0) {
                     combo = 0;
