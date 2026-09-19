@@ -531,6 +531,8 @@
         let combo = 0;
         let maxCombo = 0;
         let comboTimer = 0;
+        const COMBO_WINDOW = 6000;       // tempo (ms) para conseguir a próxima kill sem perder combo
+        const COMBO_DECAY_WINDOW = 2500; // tempo entre cada queda quando o combo está decaindo
         let wave = 1;
         let waveKills = 0;
         let killsForNextWave = 20;
@@ -664,10 +666,12 @@
         // Power levels tracking
         let powerLevels = {};
         
+        const PROJECTILE_OFFER_CHANCE = 0.4;
+
         const allUpgrades = [
             { id: 'damage', icon: '⚔️', name: 'Dano', desc: '+10 de dano', apply: () => player.damage += 10 },
             { id: 'firerate', icon: '🔫', name: 'Cadência', desc: 'Atira mais rápido', apply: () => player.fireRate = Math.max(100, player.fireRate - 50) },
-            { id: 'projectile', icon: '🎯', name: 'Projétil', desc: '+1 projétil', apply: () => player.projectileCount += 1 },
+            { id: 'projectile', icon: '🎯', name: 'Projétil', desc: '+2 projéteis', apply: () => player.projectileCount += 2 },
             { id: 'speed', icon: '💨', name: 'Velocidade', desc: 'Move mais rápido', apply: () => { if (!isTouchDevice) player.speed += 0.7; } },
             { id: 'health', icon: '❤️', name: 'Vida', desc: '+25 vida máxima', apply: () => { player.maxHealth += 25; player.health += 25; }},
             { id: 'magnet', icon: '🧲', name: 'Ímã', desc: 'Coleta XP de longe', apply: () => player.magnet += 25 },
@@ -705,6 +709,7 @@
                 setTimeout(() => {
                     player.damage = oldDamage;
                     player.furyActive = false;
+                    if (combo > 0) comboTimer = COMBO_WINDOW;
                 }, 10000);
             }},
             { icon: '🌀', name: 'PROJÉTEIS!', apply: () => {
@@ -722,6 +727,7 @@
                     setTimeout(() => {
                         player.fireRate = Math.min(450, player.fireRate + 200);
                         player.rapidFireActive = false;
+                        if (combo > 0) comboTimer = COMBO_WINDOW;
                     }, 5000);
                 }
             }},
@@ -1204,7 +1210,9 @@
                 } else {
                     const target = targets[i % targets.length];
                     angle = Math.atan2(target.y - player.y, target.x - player.x);
-                    angle += (i - (player.projectileCount - 1) / 2) * 0.15;
+                    // leque estreita conforme o número de projéteis cresce (máx ~2.2 rad no total)
+                    const spread = Math.min(0.15, 2.2 / Math.max(1, player.projectileCount - 1));
+                    angle += (i - (player.projectileCount - 1) / 2) * spread;
                 }
                 projectiles.push({
                     x: player.x, y: player.y,
@@ -1263,7 +1271,12 @@
             upgradeButtons = [];
             selectedUpgrade = 0;
             
-            [...allUpgrades].sort(() => Math.random() - 0.5).slice(0, 3).forEach((upgrade, i) => {
+            const offers = [...allUpgrades].sort(() => Math.random() - 0.5).slice(0, 3);
+            // Projétil é o upgrade mais divertido: aparece com mais frequência
+            if (Math.random() < PROJECTILE_OFFER_CHANCE && !offers.some(u => u.id === 'projectile')) {
+                offers[Math.floor(Math.random() * offers.length)] = allUpgrades.find(u => u.id === 'projectile');
+            }
+            offers.forEach((upgrade, i) => {
                 const currentLevel = powerLevels[upgrade.id] || 0;
                 const btn = document.createElement('button');
                 btn.className = 'upgrade-btn';
@@ -1429,12 +1442,13 @@
                         if (e.health <= 0) {
                             createParticles(e.x, e.y, e.color, e.isBoss ? 30 : 10);
                             
-                            // Combo system - só conta se matou de perto (distância < 350)
+                            // Combo system - só conta se matou de perto (distância < 350),
+                            // exceto durante Tiro Rápido/Fúria, quando toda kill conta
                             const distToPlayer = Math.hypot(e.x - player.x, e.y - player.y);
-                            if (distToPlayer < 350) {
+                            if (distToPlayer < 350 || player.rapidFireActive || player.furyActive) {
                                 combo++;
                                 if (combo > maxCombo) maxCombo = combo;
-                                comboTimer = 3200;
+                                comboTimer = COMBO_WINDOW;
                                 xpMultiplier = 1 + Math.floor(combo / 3) * 0.5;
                             }
                             
@@ -1591,8 +1605,10 @@
             if (comboTimer > 0 && !player.rapidFireActive && !player.furyActive) {
                 comboTimer -= deltaTime;
                 if (comboTimer <= 0) {
-                    combo = 0;
-                    xpMultiplier = 1;
+                    // Combo decai pela metade em vez de zerar de uma vez
+                    combo = Math.floor(combo / 2);
+                    xpMultiplier = 1 + Math.floor(combo / 3) * 0.5;
+                    comboTimer = combo > 0 ? COMBO_DECAY_WINDOW : 0;
                 }
             }
             updateComboUI();
