@@ -21,17 +21,18 @@ O jogo entra automaticamente em **tela cheia** ao iniciar (pressione ESC ou F11 
 | Mover | `WASD` ou `Setas` | Analógico esquerdo | 🕹️ Joystick virtual |
 | Pausar | `P` ou `ESC` | - | Botão ⏸️ |
 | Tela cheia | `F` ou `F11` | - | Automático |
-| Ajustar inimigos | `+` / `-` | 🔼 / 🟥 | Toque na barra SPAWN |
+| Ajustar dificuldade | `+` / `-` | 🔼 / 🟥 | Toque na barra AMEAÇA |
 | Selecionar/Confirmar | - | 🅰️ Botão A | Toque nos botões |
 | Navegar upgrades | - | ⬅️ ➡️ D-pad | Toque no upgrade |
 | Música ligada/desligada | `M` ou botão ♫ | - | Botão ♫ |
 | Próxima música | Botão ⏭ | - | Botão ⏭ |
+| Volume / silêncio dos efeitos | Menu SOM | - | Menu SOM |
 
 ### 📱 Suporte Mobile
 
 O jogo detecta automaticamente dispositivos touch e exibe:
 - **Joystick virtual** no canto inferior esquerdo para movimento
-- **Barra de spawn touch-friendly** - toque diretamente na posição desejada
+- **Barra de ameaça touch-friendly** - toque diretamente na posição desejada
 - **Controles otimizados** - velocidade reduzida para melhor controle
 - **Tela cheia automática** ao iniciar e retomar
 
@@ -53,7 +54,7 @@ O jogo detecta automaticamente dispositivos touch e exibe:
 - 🚀 **Proj. Rápido** - Projéteis mais velozes
 - 💚 **Regeneração** - Recupera vida ao longo do tempo
 - 🔥 **Penetração** - Projéteis atravessam inimigos
-- 🧛 **Vampirismo** - +3 HP por kill
+- 🧛 **Vampirismo** - +3 HP por kill; reserva de cura de 8% da vida máxima, recuperada a cada segundo, para manter o desafio nas hordas
 - ⚡ **Multi-Hit** - Projéteis ricocheteiam
 - 💥 **Explosão** - Inimigos explodem ao morrer
 - 🎯 **Crítico** - 15% chance de dano 2x
@@ -66,16 +67,23 @@ O jogo detecta automaticamente dispositivos touch e exibe:
 Os quatro novos poderes evoluem até o nível 5. Uma opção desses poderes aparece em cada seleção enquanto houver evoluções disponíveis. Kills de todos os poderes contam para XP, combos, waves e vampirismo.
 
 ### 👹 Inimigos e Bosses
-- **6 tipos de inimigos** com características únicas:
+- **10 tipos de inimigos** com características únicas:
   - 🔴 Pequeno rápido (2 XP)
   - 🟠 Médio resistente (4 XP)
   - 🟡 Veloz frágil (2 XP)
   - 🔵 Tanque lento (5 XP)
   - 🟣 Veloz elite (2 XP)
   - 🔷 Médio balanceado (2 XP)
+  - 🎯 Sentinela — mantém distância, trava a mira e dispara após um aviso (4 XP)
+  - 🔥 Artilheiro — três tiros em leque, com a trajetória sinalizada (5 XP)
+  - ⚡ Investidor — prepara uma investida rápida em direção fixa; desvie depois que a mira travar (3 XP)
+  - 💣 Bombardeiro — marca uma área antes de causar uma explosão; saia do círculo vermelho (6 XP)
+- Inimigos especiais entram após 18s; a partir de 300% de ameaça podem aparecer desde o início
+- Tiros inimigos são losangos laranja, diferentes dos disparos verdes do jogador. Escudo bloqueia o dano; congelamento para tiros, preparações e explosões; a bomba limpa os projéteis e áreas perigosas
 - **Bosses** - Aparecem a cada 45 segundos
   - Tamanho limitado a 90px (não ficam gigantes demais!)
-  - Dano e vida aumentam progressivamente
+  - Dano e vida aumentam com o tempo e a ameaça selecionada
+  - Disparam anéis de projéteis depois de um aviso visual; a numeração avança mesmo se o anterior ainda estiver vivo
 
 ### 💎 Power-ups
 
@@ -112,10 +120,21 @@ Os bônus temporários param junto com a pausa e são limpos ao reiniciar. A dur
   - ⚡ **CHUVA DE XP!** - 30 orbs de XP pela tela
   - 🎁 **ARSENAL EXTRA!** - Dois tesouros aparecem na arena
 
+### 🎯 Desafios durante a partida
+
+O primeiro aviso surge aos 25s, com 3s de preparação. Os desafios duram de 18 a 20s e alternam entre:
+
+- **Fogo Cruzado** — reforços de sentinelas e artilheiros
+- **Zona de Cerco** — bombardeiros, tanques e áreas de impacto sinalizadas no chão
+- **Caçada** — investidores e inimigos velozes para forçar mudanças de direção
+
+Sobreviver rende +10 HP e um tesouro. O próximo aviso chega após 30s de intervalo. A quantidade de reforços acompanha a ameaça, e todos os cronômetros param durante pausa e seleção de evolução.
+
 ### 🎨 Arena Neon
 
-- Arena com circuitos, iluminação ambiente, anéis e partículas flutuantes
-- Piloto, seis tipos de inimigos e bosses com novas armaduras e silhuetas
+- Arena com paralaxe em três camadas: anéis distantes, circuitos e partículas, com movimento ambiente e resposta ao deslocamento do piloto
+- Movimento contínuo ao atravessar as bordas; pausa e preferência de movimento reduzido são respeitadas
+- Piloto, dez tipos de inimigos e bosses com armaduras e silhuetas próprias
 - Rastros de projéteis, cristais de XP, ondas de impacto e efeitos próprios para cada poder
 - Interface renovada, cartões de evolução e controles adaptados para telas pequenas
 - Cenário e sprites desenhados em cache; partículas e efeitos limitados para manter as hordas leves
@@ -133,9 +152,11 @@ Cinco composições instrumentais originais em synthwave, sintetizadas no navega
 A playlist embaralha as cinco faixas sem repetir até terminar a rodada. A música começa ao jogar e acompanha a pausa, a evolução e o fim da partida. Use **M / ♫** para silenciar, **⏭** para trocar e a barra de volume quando exibida; volume e silêncio ficam salvos no navegador. Não há downloads de áudio nem dependências externas para as músicas.
 
 ### 🎛️ Recursos Adicionais
-- **Dificuldade ajustável de 20% a 500%** - Ajuste em tempo real com `+` / `-`, controle, mouse ou toque; com a barra focada, use as setas, `Home` e `End`
+- **Dificuldade ajustável de 20% a 1000%** - A barra AMEAÇA altera a quantidade de inimigos; acima de 100%, também aumenta a resistência, o dano e a frequência de ataques dos novos inimigos. Ajuste com `+` / `-`, controle, mouse ou toque; com a barra focada, use as setas, `Home` e `End`
+- **Pressão progressiva** - Inimigos ganham resistência ao longo da partida, com limites de velocidade e de entidades para preservar a possibilidade de desviar e o desempenho
 - **Progressão de níveis balanceada** - Multiplicador reduzido (1.35x) e XP dos inimigos aumentado
-- **Sons procedurais** - Efeitos sonoros gerados com Web Audio API
+- **Sons mais suaves** - Timbres senoidais e triangulares, filtro de agudos, entradas e saídas suaves e compressão; efeitos frequentes têm intervalo mínimo e limite de vozes simultâneas
+- **Volume independente dos efeitos** - Começa em 28%; ajuste ou silencie no menu **SOM**, inclusive no mobile. Preferência salva no navegador, separada da música
 - **Screen shake** - Feedback visual ao tomar dano
 - **Tela cheia automática** - Entra em fullscreen ao iniciar
 - **Pausa ao trocar de aba** - Mantém a partida e os bônus protegidos enquanto o jogo está em segundo plano
@@ -166,7 +187,7 @@ A playlist embaralha as cinco faixas sem repetir até terminar a rodada. A músi
 ```
 neon-survivors.html  # Arquivo único com todo o jogo
 README.md            # Este arquivo
-tests/gameplay.test.cjs # Regressões de combate, spawn, bônus e playlist
+tests/gameplay.test.cjs # Regressões de combate, dificuldade, desafios, áudio e paralaxe
 ```
 
 Para executar os testes de lógica, com Node.js instalado: `node --test tests/gameplay.test.cjs`. O jogo continua funcionando diretamente pelo HTML, sem instalação de pacotes.

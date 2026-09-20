@@ -8,7 +8,7 @@ const vm = require('node:vm');
 const html = fs.readFileSync(path.join(__dirname, '..', 'neon-survivors.html'), 'utf8');
 const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 
-function createGame() {
+function createGame({ reducedMotion = false } = {}) {
     function element() {
         const classes = new Set();
         return {
@@ -27,7 +27,7 @@ function createGame() {
     };
     const context = vm.createContext({
         document, console, performance,
-        window: { innerWidth: 1280, innerHeight: 720, addEventListener() {}, matchMedia: () => ({ matches: false }) },
+        window: { innerWidth: 1280, innerHeight: 720, addEventListener() {}, matchMedia: () => ({ matches: reducedMotion }) },
         navigator: { maxTouchPoints: 0, getGamepads: () => [] },
         localStorage: { getItem: () => null, setItem() {} },
         setInterval() {}, setTimeout() {}, requestAnimationFrame() {}, cancelAnimationFrame() {}
@@ -45,9 +45,9 @@ function createGame() {
     return run;
 }
 
-test('spawn caps at 500% and creates about five times as many enemies', () => {
+test('difficulty caps at 1000% and preserves proportional spawn at 500% and 1000%', () => {
     const run = createGame();
-    assert.equal(run('adjustDifficulty(100); spawnMultiplier'), 5);
+    assert.equal(run('adjustDifficulty(100); spawnMultiplier'), 10);
     assert.equal(run('adjustDifficulty(-100); spawnMultiplier'), 0.2);
     const count = multiplier => run(`
         initGame(); player.lastShot = Infinity; player.shieldUntil = Infinity; player.xpToLevel = Infinity;
@@ -55,8 +55,169 @@ test('spawn caps at 500% and creates about five times as many enemies', () => {
         for (let i = 0; i < 200; i++) update(50);
         enemies.length;
     `);
-    const normal = count(1), maximum = count(5);
-    assert.ok(maximum >= normal * 4.5 && maximum <= normal * 5.5, `${normal} vs ${maximum}`);
+    const normal = count(1);
+    for (const multiplier of [5, 10]) {
+        const maximum = count(multiplier);
+        assert.ok(maximum >= normal * multiplier * 0.9 && maximum <= normal * multiplier * 1.1, `${normal} vs ${maximum} at ${multiplier}`);
+    }
+});
+
+test('high threat increases health and damage, and survival time keeps scaling resistance', () => {
+    const run = createGame();
+    run('spawnMultiplier = 1; const normalEnemy = spawnEnemy(0); spawnMultiplier = 10; const hardEnemy = spawnEnemy(0)');
+    assert.ok(run('hardEnemy.health > normalEnemy.health * 2.5'));
+    assert.ok(run('hardEnemy.damage > normalEnemy.damage * 1.8'));
+    run('game.time = 180000; const lateEnemy = spawnEnemy(0)');
+    assert.ok(run('lateEnemy.health > hardEnemy.health * 2'));
+    assert.ok(run('lateEnemy.speed <= normalEnemy.speed * 1.4'));
+    run('for (let i = 0; i < 500; i++) spawnEnemy()');
+    assert.equal(run('enemies.length'), run('MAX_ENEMIES'));
+});
+
+test('sentries telegraph, lock aim, respect freeze, and fire only while visible', () => {
+    const run = createGame();
+    run(`const sentry = spawnEnemy(6); sentry.x = player.x - 250; sentry.y = player.y;
+        sentry.speed = 0; sentry.attackTimer = 0; updateEnemies(16);`);
+    assert.equal(run('enemyProjectiles.length'), 0);
+    assert.equal(run('sentry.windupLeft'), 850);
+    run('player.y += 120; player.freezeUntil = 1000; updateEnemies(900)');
+    assert.equal(run('sentry.windupLeft'), 850);
+    run('player.freezeUntil = 0; updateEnemies(800)');
+    assert.equal(run('enemyProjectiles.length'), 0);
+    run('updateEnemies(50)');
+    assert.equal(run('enemyProjectiles.length'), 1);
+    assert.equal(run('enemyProjectiles[0].vy'), 0);
+    run('enemyProjectiles = []; sentry.x = -10; sentry.attackTimer = 0; updateEnemies(1000)');
+    assert.equal(run('enemyProjectiles.length'), 0);
+    assert.equal(run('sentry.windupLeft'), 0);
+});
+
+test('artillery fires a spread, bosses fire rings, and defeated shooters cannot attack', () => {
+    const run = createGame();
+    run(`const artillery = spawnEnemy(7); artillery.x = player.x - 240; artillery.y = player.y;
+        artillery.attackTimer = 0; updateEnemies(16); updateEnemies(1000);`);
+    assert.equal(run('enemyProjectiles.length'), 3);
+    assert.ok(run('enemyProjectiles[0].vy < 0 && enemyProjectiles[2].vy > 0'));
+    run(`enemies = []; enemyProjectiles = []; spawnBoss(); const boss = enemies[0];
+        boss.x = 200; boss.y = 200; boss.attackTimer = 0; updateEnemies(16); updateEnemies(1200);`);
+    assert.equal(run('enemyProjectiles.length'), 10);
+    run('enemyProjectiles = []; boss.health = 0; resolveDefeatedEnemies(); updateEnemies(5000)');
+    assert.equal(run('enemyProjectiles.length'), 0);
+});
+
+test('chargers hold during the warning then dash in the locked direction', () => {
+    const run = createGame();
+    run(`const charger = spawnEnemy(8); charger.x = player.x - 250; charger.y = player.y;
+        charger.attackTimer = 0; charger.speed = 0; updateEnemies(16);
+        const startX = charger.x, startY = charger.y; player.y += 150; updateEnemies(500);`);
+    assert.equal(run('charger.x'), run('startX'));
+    run('updateEnemies(400); updateEnemies(100)');
+    assert.ok(run('charger.x > startX'));
+    assert.equal(run('charger.y'), run('startY'));
+});
+
+test('bombers mark a fixed area; impacts wait, freeze, and deal damage once', () => {
+    const run = createGame();
+    run(`const bomber = spawnEnemy(9); bomber.x = player.x - 240; bomber.y = player.y;
+        bomber.speed = 0; bomber.attackTimer = 0; updateEnemies(16); updateEnemies(600);`);
+    assert.equal(run('hazards.length'), 1);
+    assert.equal(run('hazards[0].x'), run('player.x'));
+    run('player.freezeUntil = 1000; updateEnemyAttacks(1400)');
+    assert.equal(run('hazards[0].remaining'), 1400);
+    run('player.freezeUntil = 0; updateEnemyAttacks(1399)');
+    assert.equal(run('player.health'), 100);
+    run('updateEnemyAttacks(1)');
+    assert.equal(run('player.health'), 85);
+    assert.equal(run('hazards.length'), 0);
+    run('updateEnemyAttacks(100)');
+    assert.equal(run('player.health'), 85);
+    run('player.hurtUntil = 0; addHazard(player.x - 200, player.y, 72, 20); updateEnemyAttacks(1400)');
+    assert.equal(run('player.health'), 85);
+});
+
+test('hostile bullets use swept collisions, shared invulnerability, shield, lifetime and freeze', () => {
+    const run = createGame();
+    run(`function bullet() { return { x: player.x - 100, y: player.y, vx: 200, vy: 0, radius: 5, damage: 12, life: 4200 }; }
+        enemyProjectiles = [bullet(), bullet()]; updateEnemyAttacks(1000 / 60);`);
+    assert.equal(run('player.health'), 88);
+    assert.equal(run('enemyProjectiles.length'), 0);
+    run('player.hurtUntil = 0; player.shieldUntil = 1000; enemyProjectiles = [bullet()]; updateEnemyAttacks(1000 / 60)');
+    assert.equal(run('player.health'), 88);
+    run('enemyProjectiles = [bullet()]; player.freezeUntil = 1000; updateEnemyAttacks(100)');
+    assert.equal(run('enemyProjectiles[0].x'), run('player.x - 100'));
+    assert.equal(run('enemyProjectiles[0].life'), 4200);
+    run('player.freezeUntil = 0; enemyProjectiles[0].vx = 0; updateEnemyAttacks(4201)');
+    assert.equal(run('enemyProjectiles.length'), 0);
+});
+
+test('challenges alternate, warn before spawning, pause, reward once and reset on restart', () => {
+    const run = createGame();
+    for (const expected of ['FOGO CRUZADO', 'ZONA DE CERCO', 'CAÇADA']) {
+        run('enemies = []; game.time = game.nextChallenge; updateChallenges()');
+        assert.equal(run('game.challenge.name'), expected);
+        assert.equal(run('enemies.length'), 0);
+        run('game.paused = true; globalThis.constTime = game.time; update(50)');
+        assert.equal(run('game.time'), run('constTime'));
+        run('game.paused = false; game.time = game.challenge.startsAt; updateChallenges()');
+        assert.equal(run('enemies.length'), 1);
+        const rewardsBefore = run('treasures.length');
+        run('game.time = game.challenge.endsAt; updateChallenges(); updateChallenges()');
+        assert.equal(run('treasures.length'), rewardsBefore + 1);
+    }
+    assert.equal(run('game.challengesSurvived'), 3);
+    run('enemyProjectiles = [{}]; hazards = [{}]; initGame()');
+    assert.equal(run('enemyProjectiles.length + hazards.length + game.challengesSurvived'), 0);
+    assert.equal(run('game.challenge'), null);
+    assert.equal(run('game.nextChallenge'), 25000);
+});
+
+test('lifesteal remains useful but a dense pack cannot instantly refill all health', () => {
+    const run = createGame();
+    run(`player.health = 20; player.lifesteal = 30; killsForNextWave = Infinity;
+        enemies = Array.from({length: 30}, () => testEnemy(100, 100, 0)); resolveDefeatedEnemies();`);
+    assert.equal(run('player.health'), 28);
+    run('update(1000); enemies = [testEnemy(100, 100, 0)]; resolveDefeatedEnemies()');
+    assert.equal(run('player.health'), 36);
+});
+
+test('parallax tracks travel without screen-wrap jumps and respects pause and reduced motion', () => {
+    const run = createGame();
+    run('player.x = canvas.width + player.radius - 1; keys.d = true; update(1000 / 60)');
+    assert.equal(run('parallax.x'), 4.5);
+    assert.equal(run('player.x'), -18);
+    run('game.paused = true; update(50)');
+    assert.equal(run('parallax.x'), 4.5);
+    run('initGame()');
+    assert.equal(run('parallax.x + parallax.y'), 0);
+    const reduced = createGame({ reducedMotion: true });
+    reduced('keys.d = true; update(50)');
+    assert.equal(reduced('parallax.x + parallax.y'), 0);
+});
+
+test('effects throttle frequent cues, cap polyphony, release nodes and obey independent mute', () => {
+    const run = createGame();
+    run(`const createdVoices = [];
+        audioCtx = { state: 'running', currentTime: 1,
+            createOscillator() {
+                const voice = { frequency: { setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} },
+                    connect() {}, disconnect() {}, start() {}, stop(at) { if (at === undefined) this.onended?.(); } };
+                createdVoices.push(voice); return voice;
+            },
+            createGain() { return { gain: { setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
+        };
+        sfx.bus = {}; sfx.input = {};
+        playSound('shoot'); playSound('shoot'); playSound('unknown');`);
+    assert.equal(run('createdVoices.length'), 1);
+    run("for (let i = 0; i < 20; i++) { audioCtx.currentTime++; playSound('shoot'); }");
+    assert.equal(run('sfx.voices.size'), 6);
+    run("for (let i = 0; i < 20; i++) { audioCtx.currentTime++; playSound('hurt'); }");
+    assert.equal(run('sfx.voices.size'), 10);
+    assert.ok(run("createdVoices.every(voice => ['sine', 'triangle'].includes(voice.type))"));
+    run("stopSfxVoices(); sfx.muted = true; audioCtx.currentTime++; playSound('boss')");
+    assert.equal(run('sfx.voices.size'), 0);
+    assert.equal(run('createdVoices.length'), 10);
+    run("sfx.muted = false; sfx.volume = 0; audioCtx.currentTime++; playSound('boss')");
+    assert.equal(run('sfx.voices.size'), 0);
 });
 
 test('lightning kills every chained target and grants combo, wave and XP rewards', () => {
