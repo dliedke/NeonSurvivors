@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🧛 Neon Survivors</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230a0a0f%22%2F%3E%3Cpath%20d%3D%22M32%205%2055%2018v28L32%2059%209%2046V18Z%22%20fill%3D%22%23152039%22%20stroke%3D%22%2300ffff%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22m36%2012-18%2023h12l-3%2017%2020-25H34Z%22%20fill%3D%22%23ff00ff%22%2F%3E%3Cpath%20d%3D%22m35%2018-12%2015h11l-3%2012%2011-15H31Z%22%20fill%3D%22%23e5ffff%22%2F%3E%3C%2Fsvg%3E">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap');
         
@@ -545,17 +546,17 @@
             <div class="stat-box">⏱️ <span id="time">0:00</span></div>
             <div class="stat-box">🌊 <span id="waveNum">1</span></div>
             <div class="stat-box kills">💀 <span id="kills">0</span></div>
-            <button id="pauseBtn" class="stat-box">⏸️</button>
+            <button id="pauseBtn" class="stat-box" data-i18n-aria-label="pause" aria-label="Pausar">⏸️</button>
         </div>
         
         <div id="powerLevels"></div>
         
         <div id="difficultyPanel">
-            <div class="label">AMEAÇA</div>
+            <div class="label" data-i18n="threat">AMEAÇA</div>
             <div class="diff-max">1000% MAX</div>
-            <div id="difficultyBar" role="slider" tabindex="0" aria-label="Dificuldade: quantidade, resistência e dano dos inimigos" aria-orientation="vertical" aria-valuemin="20" aria-valuemax="1000" aria-valuenow="100"><div id="difficultyFill"></div></div>
+            <div id="difficultyBar" role="slider" tabindex="0" aria-label="Dificuldade: quantidade, resistência e dano dos inimigos" data-i18n-aria-label="difficultyLabel" aria-orientation="vertical" aria-valuemin="20" aria-valuemax="1000" aria-valuenow="100"><div id="difficultyFill"></div></div>
             <div id="difficultyValue">100%</div>
-            <div class="diff-hint">+/- ou<br>🔼/🟥</div>
+            <div class="diff-hint" data-i18n="difficultyHint">+/- ou<br>🔼/🟥</div>
         </div>
         
         <div id="levelDisplay">LV 1</div>
@@ -564,19 +565,19 @@
         <div id="comboDisplay"></div>
         <div id="waveDisplay"></div>
         <div id="multiplierDisplay">x1.0</div>
-        <div id="bossWarning">⚠️ BOSS! ⚠️</div>
+        <div id="bossWarning" data-i18n="bossWarning">⚠️ BOSS! ⚠️</div>
         <div id="challengeDisplay" role="status" aria-live="polite" aria-atomic="true"></div>
-        <div id="musicPanel" aria-label="Música de fundo">
-            <button id="musicToggle" type="button" aria-label="Silenciar música" aria-pressed="false" title="Música (M)">♫</button>
-            <div class="music-info"><small>NEON RADIO · SHUFFLE</small><span id="trackName">5 faixas originais</span></div>
-            <input id="musicVolume" type="range" min="0" max="100" value="35" aria-label="Volume da música">
-            <button id="nextTrack" type="button" aria-label="Próxima música" title="Próxima faixa">⏭</button>
+        <div id="musicPanel" aria-label="Música de fundo" data-i18n-aria-label="backgroundMusic">
+            <button id="musicToggle" type="button" aria-label="Silenciar música" data-i18n-aria-label="muteMusic" aria-pressed="false" title="Música (M)" data-i18n-title="musicShortcut">♫</button>
+            <div class="music-info"><small data-i18n="radioMode">NEON RADIO · SHUFFLE</small><span id="trackName" data-i18n="trackCount">5 faixas originais</span></div>
+            <input id="musicVolume" type="range" min="0" max="100" value="35" aria-label="Volume da música" data-i18n-aria-label="musicVolume">
+            <button id="nextTrack" type="button" aria-label="Próxima música" data-i18n-aria-label="nextMusic" title="Próxima faixa" data-i18n-title="nextTrack">⏭</button>
             <details id="soundSettings">
-                <summary aria-label="Configurar efeitos sonoros">SOM</summary>
+                <summary aria-label="Configurar efeitos sonoros" data-i18n-aria-label="soundSettings" data-i18n="sound">SOM</summary>
                 <div class="sound-options">
-                    <label for="sfxVolume">Efeitos sonoros <output id="sfxValue">28%</output></label>
+                    <label for="sfxVolume"><span data-i18n="soundEffects">Efeitos sonoros</span> <output id="sfxValue">28%</output></label>
                     <input id="sfxVolume" type="range" min="0" max="100" value="28">
-                    <button id="sfxToggle" type="button" aria-pressed="false">Silenciar efeitos</button>
+                    <button id="sfxToggle" type="button" aria-pressed="false" data-i18n="muteSfx">Silenciar efeitos</button>
                 </div>
             </details>
         </div>
@@ -589,12 +590,12 @@
         </div>
 
         <div id="startScreen">
-            <div class="eyebrow">SOBREVIVA. EVOLUA. DOMINE.</div>
+            <div class="eyebrow" data-i18n="eyebrow">SOBREVIVA. EVOLUA. DOMINE.</div>
             <h1>NEON<br><span>SURVIVORS</span></h1>
-            <p class="tagline">Uma arena sem limites. Seu próximo poder<br>pode mudar tudo.</p>
-            <div class="feature-pills"><span>⚡ 18 EVOLUÇÕES</span><span>🎯 DESAFIOS NA ARENA</span><span>🔥 AMEAÇA ATÉ 1000%</span></div>
-            <button class="btn" id="startBtn">ENTRAR NA ARENA →</button>
-            <div class="instructions">
+            <p class="tagline" data-i18n="tagline">Uma arena sem limites. Seu próximo poder<br>pode mudar tudo.</p>
+            <div class="feature-pills"><span data-i18n="upgradeFeature">⚡ 18 EVOLUÇÕES</span><span data-i18n="challengeFeature">🎯 DESAFIOS NA ARENA</span><span data-i18n="threatFeature">🔥 AMEAÇA ATÉ 1000%</span></div>
+            <button class="btn" id="startBtn" data-i18n="start">ENTRAR NA ARENA →</button>
+            <div class="instructions" data-i18n="desktopInstructions">
                 <span>WASD</span> ou <span>SETAS</span> para mover<br>
                 <span>🎮 A</span> para começar/selecionar<br>
                 <span>F</span> ou <span>F11</span> para tela cheia<br>
@@ -603,23 +604,148 @@
         </div>
         
         <div id="upgradeScreen">
-            <h2>⬆️ LEVEL UP!</h2>
+            <h2 data-i18n="levelUp">⬆️ LEVEL UP!</h2>
             <div class="upgrade-options" id="upgradeOptions"></div>
         </div>
         
         <div id="gameOverScreen">
-            <h1>💀 GAME OVER 💀</h1>
+            <h1 data-i18n="gameOver">💀 GAME OVER 💀</h1>
             <div id="finalStats"></div>
-            <button class="btn" id="restartBtn">TENTAR NOVAMENTE</button>
+            <button class="btn" id="restartBtn" data-i18n="restart">TENTAR NOVAMENTE</button>
         </div>
 
         <div id="pauseScreen">
-            <h1>⏸️ PAUSADO</h1>
-            <button class="btn" id="resumeBtn">CONTINUAR</button>
+            <h1 data-i18n="paused">⏸️ PAUSADO</h1>
+            <button class="btn" id="resumeBtn" data-i18n="resume">CONTINUAR</button>
         </div>
     </div>
 
     <script>
+        // Inline translations keep the downloadable HTML self-contained.
+        const translations = {
+            threat: {"en": "THREAT", "pt": "AMEAÇA"},
+            difficultyHint: {"en": "+/- or<br>🔼/🟥", "pt": "+/- ou<br>🔼/🟥"},
+            radioMode: {"en": "NEON RADIO · SHUFFLE", "pt": "NEON RADIO · ALEATÓRIO"},
+            trackCount: {"en": "5 original tracks", "pt": "5 faixas originais"},
+            sound: {"en": "SOUND", "pt": "SOM"},
+            muteSfx: {"en": "Mute effects", "pt": "Silenciar efeitos"},
+            eyebrow: {"en": "SURVIVE. EVOLVE. DOMINATE.", "pt": "SOBREVIVA. EVOLUA. DOMINE."},
+            tagline: {"en": "An arena without limits. Your next power<br>could change everything.", "pt": "Uma arena sem limites. Seu próximo poder<br>pode mudar tudo."},
+            upgradeFeature: {"en": "⚡ 18 UPGRADES", "pt": "⚡ 18 EVOLUÇÕES"},
+            challengeFeature: {"en": "🎯 ARENA CHALLENGES", "pt": "🎯 DESAFIOS NA ARENA"},
+            threatFeature: {"en": "🔥 THREAT UP TO 1000%", "pt": "🔥 AMEAÇA ATÉ 1000%"},
+            start: {"en": "ENTER THE ARENA →", "pt": "ENTRAR NA ARENA →"},
+            levelUp: {"en": "⬆️ LEVEL UP!", "pt": "⬆️ SUBIU DE NÍVEL!"},
+            gameOver: {"en": "💀 GAME OVER 💀", "pt": "💀 FIM DE JOGO 💀"},
+            restart: {"en": "TRY AGAIN", "pt": "TENTAR NOVAMENTE"},
+            paused: {"en": "⏸️ PAUSED", "pt": "⏸️ PAUSADO"},
+            resume: {"en": "RESUME", "pt": "CONTINUAR"},
+            soundEffects: {"en": "Sound effects", "pt": "Efeitos sonoros"},
+            difficultyLabel: {"en": "Difficulty: enemy count, health and damage", "pt": "Dificuldade: quantidade, resistência e dano dos inimigos"},
+            backgroundMusic: {"en": "Background music", "pt": "Música de fundo"},
+            muteMusic: {"en": "Mute music", "pt": "Silenciar música"},
+            musicShortcut: {"en": "Music (M)", "pt": "Música (M)"},
+            musicVolume: {"en": "Music volume", "pt": "Volume da música"},
+            nextMusic: {"en": "Next track", "pt": "Próxima música"},
+            nextTrack: {"en": "Next track", "pt": "Próxima faixa"},
+            soundSettings: {"en": "Sound effect settings", "pt": "Configurar efeitos sonoros"},
+            pause: {"en": "Pause", "pt": "Pausar"},
+            desktopInstructions: {"en": "<span>WASD</span> or <span>ARROW KEYS</span> to move<br><span>🎮 A</span> to start/select<br><span>F</span> or <span>F11</span> for fullscreen<br><span>🔼 Triangle</span> more enemies | <span>🟥 Square</span> fewer enemies", "pt": "<span>WASD</span> ou <span>SETAS</span> para mover<br><span>🎮 A</span> para começar/selecionar<br><span>F</span> ou <span>F11</span> para tela cheia<br><span>🔼 Triângulo</span> mais inimigos | <span>🟥 Quadrado</span> menos inimigos"},
+            touchInstructions: {"en": "<span>JOYSTICK</span> to move<br><span>TAP</span> the threat bar to adjust enemies<br><span>F</span> or <span>F11</span> for fullscreen", "pt": "<span>JOYSTICK</span> para mover<br><span>TOQUE</span> na barra para ajustar inimigos<br><span>F</span> ou <span>F11</span> para tela cheia"},
+            damageName: {"en": "Damage", "pt": "Dano"},
+            damageDesc: {"en": "+10 damage", "pt": "+10 de dano"},
+            firerateName: {"en": "Fire Rate", "pt": "Cadência"},
+            firerateDesc: {"en": "Shoot faster", "pt": "Atira mais rápido"},
+            projectileName: {"en": "Projectiles", "pt": "Projétil"},
+            projectileDesc: {"en": "+2 projectiles", "pt": "+2 projéteis"},
+            speedName: {"en": "Speed", "pt": "Velocidade"},
+            speedDesc: {"en": "Move faster", "pt": "Move mais rápido"},
+            healthName: {"en": "Health", "pt": "Vida"},
+            healthDesc: {"en": "+25 maximum health", "pt": "+25 vida máxima"},
+            magnetName: {"en": "Magnet", "pt": "Ímã"},
+            magnetDesc: {"en": "Collect XP from farther away", "pt": "Coleta XP de longe"},
+            projspeedName: {"en": "Fast Shots", "pt": "Proj. Rápido"},
+            projspeedDesc: {"en": "Faster projectiles", "pt": "Projéteis mais rápidos"},
+            regenName: {"en": "Regeneration", "pt": "Regeneração"},
+            regenDesc: {"en": "Recover health", "pt": "Recupera vida"},
+            pierceName: {"en": "Piercing", "pt": "Penetração"},
+            pierceDesc: {"en": "Projectiles pass through enemies", "pt": "Projéteis atravessam"},
+            lifestealName: {"en": "Lifesteal", "pt": "Vampirismo"},
+            lifestealDesc: {"en": "+3 HP per kill; healing capped at 8% health/s", "pt": "+3 HP por kill; cura limitada a 8% da vida/s"},
+            multihitName: {"en": "Multi-Hit", "pt": "Multi-Hit"},
+            multihitDesc: {"en": "+1 ricochet", "pt": "Ricochete +1"},
+            explosionName: {"en": "Explosion", "pt": "Explosão"},
+            explosionDesc: {"en": "Enemies explode", "pt": "Inimigos explodem"},
+            critchanceName: {"en": "Critical Hit", "pt": "Crítico"},
+            critchanceDesc: {"en": "15% chance of 2x damage", "pt": "15% chance 2x dano"},
+            orbsizeName: {"en": "XP++", "pt": "XP++"},
+            orbsizeDesc: {"en": "+20% XP collected", "pt": "+20% XP coletado"},
+            orbitName: {"en": "Orbital Drones", "pt": "Drones Orbitais"},
+            orbitDesc: {"en": "2 contact drones; +1 per upgrade", "pt": "2 drones de contato; +1 por evolução"},
+            lightningName: {"en": "Chain Lightning", "pt": "Raio em Cadeia"},
+            lightningDesc: {"en": "Lightning jumps between enemies; +1 target per level", "pt": "Raios saltam entre inimigos; +1 alvo por nível"},
+            frostName: {"en": "Frost Pulse", "pt": "Pulso Glacial"},
+            frostDesc: {"en": "Ice wave damages and slows hordes", "pt": "Onda de gelo causa dano e desacelera hordas"},
+            meteorName: {"en": "Meteors", "pt": "Meteoros"},
+            meteorDesc: {"en": "Automatic bombardment; more impacts per level", "pt": "Bombardeio automático; mais impactos por nível"},
+            audioUnavailable: {"en": "Audio unavailable", "pt": "Áudio indisponível"},
+            unmuteSfx: {"en": "Unmute effects", "pt": "Ativar efeitos"},
+            unmuteMusic: {"en": "Unmute music", "pt": "Ativar música"},
+            bomb: {"en": "EXPLOSION!", "pt": "EXPLOSÃO!"},
+            shield: {"en": "SHIELD!", "pt": "ESCUDO!"},
+            fullHeal: {"en": "FULL HEAL!", "pt": "CURA TOTAL!"},
+            fury: {"en": "FURY!", "pt": "FÚRIA!"},
+            extraProjectiles: {"en": "PROJECTILES!", "pt": "PROJÉTEIS!"},
+            freeze: {"en": "TIME FREEZE!", "pt": "TEMPO CONGELADO!"},
+            rapidFire: {"en": "Rapid Fire", "pt": "Tiro Rápido"},
+            star: {"en": "Star", "pt": "Estrela"},
+            coins: {"en": "Coins", "pt": "Moedas"},
+            vacuum: {"en": "Global Magnet", "pt": "Ímã Total"},
+            horde: {"en": "HORDE!", "pt": "HORDA!"},
+            elite: {"en": "ELITE!", "pt": "ELITE!"},
+            xpRain: {"en": "XP RAIN!", "pt": "CHUVA DE XP!"},
+            arsenal: {"en": "EXTRA ARSENAL!", "pt": "ARSENAL EXTRA!"},
+            crossfire: {"en": "CROSSFIRE", "pt": "FOGO CRUZADO"},
+            crossfireHint: {"en": "Dodge the shots and take down the sentries.", "pt": "Desvie dos tiros e elimine as sentinelas."},
+            siege: {"en": "SIEGE ZONE", "pt": "ZONA DE CERCO"},
+            siegeHint: {"en": "Leave the red circles before impact.", "pt": "Saia dos círculos vermelhos antes do impacto."},
+            hunt: {"en": "THE HUNT", "pt": "CAÇADA"},
+            huntHint: {"en": "Wait for their aim to lock, then dodge the charges.", "pt": "Espere a mira travar e desvie das investidas."},
+            challengeComplete: {"en": "CHALLENGE COMPLETE · +10 HP + TREASURE", "pt": "DESAFIO SUPERADO · +10 HP + TESOURO"},
+            getReady: {"en": "GET READY · ", "pt": "PREPARE-SE · "},
+            impact: {"en": "IMPACT", "pt": "IMPACTO"},
+            upgradeLevel: {"en": "{name}: level {level}", "pt": "{name}: nível {level}"},
+            waveAnnouncement: {"en": "🌊 WAVE {wave} 🌊", "pt": "🌊 ONDA {wave} 🌊"},
+            finalStats: {"en": "⏱️ Time: {time}<br>💀 Kills: {kills}<br>🌊 Wave: {wave}<br>🔥 Max Combo: {combo}<br>👹 Bosses: {bosses}<br>🎯 Challenges: {challenges}<br>⭐ Level: {level}", "pt": "⏱️ Tempo: {time}<br>💀 Abates: {kills}<br>🌊 Onda: {wave}<br>🔥 Combo máximo: {combo}<br>👹 Chefes: {bosses}<br>🎯 Desafios: {challenges}<br>⭐ Nível: {level}"},
+            bossWarning: {"en": "⚠️ BOSS! ⚠️", "pt": "⚠️ CHEFE! ⚠️"},
+            bossLevel: {"en": "BOSS · {level}", "pt": "CHEFE · {level}"},
+        };
+
+        function detectLanguage() {
+            const preferences = [...(navigator.languages || []), navigator.language];
+            for (const preference of preferences) {
+                const base = String(preference || '').toLowerCase().split(/[-_]/)[0];
+                if (base === 'pt' || base === 'en') return base;
+            }
+            return 'en';
+        }
+
+        const language = detectLanguage();
+        function t(key, values = {}) {
+            const message = translations[key][language] || translations[key].en;
+            return message.replace(/\{(\w+)\}/g, (match, name) => values[name] ?? match);
+        }
+
+        document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en';
+        // Only trusted, inline translation strings contain markup.
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            element.innerHTML = t(element.getAttribute('data-i18n'));
+        });
+        for (const attribute of ['aria-label', 'title']) {
+            document.querySelectorAll(`[data-i18n-${attribute}]`).forEach(element => {
+                element.setAttribute(attribute, t(element.getAttribute(`data-i18n-${attribute}`)));
+            });
+        }
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         let arenaTexture = null;
@@ -667,7 +793,7 @@
                 }
                 if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
             } catch (error) {
-                document.getElementById('trackName').textContent = 'Áudio indisponível';
+                document.getElementById('trackName').textContent = t('audioUnavailable');
             }
         }
         
@@ -710,7 +836,7 @@
             document.getElementById('sfxVolume').value = Math.round(sfx.volume * 100);
             document.getElementById('sfxValue').textContent = `${Math.round(sfx.volume * 100)}%`;
             const button = document.getElementById('sfxToggle');
-            button.textContent = sfx.muted ? 'Ativar efeitos' : 'Silenciar efeitos';
+            button.textContent = sfx.muted ? t('unmuteSfx') : t('muteSfx');
             button.setAttribute('aria-pressed', String(sfx.muted));
             if (sfx.bus) sfx.bus.gain.setTargetAtTime(sfx.muted ? 0 : sfx.volume * 0.55, audioCtx.currentTime, 0.03);
         }
@@ -780,7 +906,7 @@
             const toggle = document.getElementById('musicToggle');
             toggle.textContent = music.muted ? '♩' : '♫';
             toggle.setAttribute('aria-pressed', String(music.muted));
-            toggle.setAttribute('aria-label', music.muted ? 'Ativar música' : 'Silenciar música');
+            toggle.setAttribute('aria-label', music.muted ? t('unmuteMusic') : t('muteMusic'));
             document.getElementById('musicVolume').value = Math.round(music.volume * 100);
             if (music.track >= 0) document.getElementById('trackName').textContent = musicTracks[music.track].name;
         }
@@ -923,47 +1049,47 @@
         const PROJECTILE_OFFER_CHANCE = 0.4;
 
         const allUpgrades = [
-            { id: 'damage', icon: '⚔️', name: 'Dano', desc: '+10 de dano', apply: () => player.damage += 10 },
-            { id: 'firerate', icon: '🔫', name: 'Cadência', desc: 'Atira mais rápido', apply: () => player.fireRate = Math.max(100, player.fireRate - 50) },
-            { id: 'projectile', icon: '🎯', name: 'Projétil', desc: '+2 projéteis', apply: () => player.projectileCount += 2 },
-            { id: 'speed', icon: '💨', name: 'Velocidade', desc: 'Move mais rápido', apply: () => { if (!isTouchDevice) player.speed += 0.7; } },
-            { id: 'health', icon: '❤️', name: 'Vida', desc: '+25 vida máxima', apply: () => { player.maxHealth += 25; player.health += 25; }},
-            { id: 'magnet', icon: '🧲', name: 'Ímã', desc: 'Coleta XP de longe', apply: () => player.magnet += 25 },
-            { id: 'projspeed', icon: '🚀', name: 'Proj. Rápido', desc: 'Projéteis mais rápidos', apply: () => player.projectileSpeed += 1.5 },
-            { id: 'regen', icon: '💚', name: 'Regeneração', desc: 'Recupera vida', apply: () => player.regen += 0.4 },
-            { id: 'pierce', icon: '🔥', name: 'Penetração', desc: 'Projéteis atravessam', apply: () => player.projectilePierce += 1 },
-            { id: 'lifesteal', icon: '🧛', name: 'Vampirismo', desc: '+3 HP por kill; cura limitada a 8% da vida/s', apply: () => player.lifesteal = (player.lifesteal || 0) + 3 },
-            { id: 'multihit', icon: '⚡', name: 'Multi-Hit', desc: 'Ricochete +1', apply: () => player.projectileBounce = (player.projectileBounce || 0) + 1 },
-            { id: 'explosion', icon: '💥', name: 'Explosão', desc: 'Inimigos explodem', apply: () => player.explodeOnKill = (player.explodeOnKill || 0) + 20 },
-            { id: 'critchance', icon: '🎯', name: 'Crítico', desc: '15% chance 2x dano', apply: () => player.critChance = (player.critChance || 0) + 0.15 },
-            { id: 'orbsize', icon: '🧲', name: 'XP++', desc: '+20% XP coletado', apply: () => player.xpBonus = (player.xpBonus || 1) * 1.2 },
-            { id: 'orbit', icon: '🛰️', name: 'Drones Orbitais', desc: '2 drones de contato; +1 por evolução', maxLevel: 5, apply: () => player.orbitLevel++ },
-            { id: 'lightning', icon: '🌩️', name: 'Raio em Cadeia', desc: 'Raios saltam entre inimigos; +1 alvo por nível', maxLevel: 5, apply: () => player.lightningLevel++ },
-            { id: 'frost', icon: '❄️', name: 'Pulso Glacial', desc: 'Onda de gelo causa dano e desacelera hordas', maxLevel: 5, apply: () => player.frostLevel++ },
-            { id: 'meteor', icon: '☄️', name: 'Meteoros', desc: 'Bombardeio automático; mais impactos por nível', maxLevel: 5, apply: () => player.meteorLevel++ },
+            { id: 'damage', icon: '⚔️', name: t('damageName'), desc: t('damageDesc'), apply: () => player.damage += 10 },
+            { id: 'firerate', icon: '🔫', name: t('firerateName'), desc: t('firerateDesc'), apply: () => player.fireRate = Math.max(100, player.fireRate - 50) },
+            { id: 'projectile', icon: '🎯', name: t('projectileName'), desc: t('projectileDesc'), apply: () => player.projectileCount += 2 },
+            { id: 'speed', icon: '💨', name: t('speedName'), desc: t('speedDesc'), apply: () => { if (!isTouchDevice) player.speed += 0.7; } },
+            { id: 'health', icon: '❤️', name: t('healthName'), desc: t('healthDesc'), apply: () => { player.maxHealth += 25; player.health += 25; }},
+            { id: 'magnet', icon: '🧲', name: t('magnetName'), desc: t('magnetDesc'), apply: () => player.magnet += 25 },
+            { id: 'projspeed', icon: '🚀', name: t('projspeedName'), desc: t('projspeedDesc'), apply: () => player.projectileSpeed += 1.5 },
+            { id: 'regen', icon: '💚', name: t('regenName'), desc: t('regenDesc'), apply: () => player.regen += 0.4 },
+            { id: 'pierce', icon: '🔥', name: t('pierceName'), desc: t('pierceDesc'), apply: () => player.projectilePierce += 1 },
+            { id: 'lifesteal', icon: '🧛', name: t('lifestealName'), desc: t('lifestealDesc'), apply: () => player.lifesteal = (player.lifesteal || 0) + 3 },
+            { id: 'multihit', icon: '⚡', name: t('multihitName'), desc: t('multihitDesc'), apply: () => player.projectileBounce = (player.projectileBounce || 0) + 1 },
+            { id: 'explosion', icon: '💥', name: t('explosionName'), desc: t('explosionDesc'), apply: () => player.explodeOnKill = (player.explodeOnKill || 0) + 20 },
+            { id: 'critchance', icon: '🎯', name: t('critchanceName'), desc: t('critchanceDesc'), apply: () => player.critChance = (player.critChance || 0) + 0.15 },
+            { id: 'orbsize', icon: '🧲', name: t('orbsizeName'), desc: t('orbsizeDesc'), apply: () => player.xpBonus = (player.xpBonus || 1) * 1.2 },
+            { id: 'orbit', icon: '🛰️', name: t('orbitName'), desc: t('orbitDesc'), maxLevel: 5, apply: () => player.orbitLevel++ },
+            { id: 'lightning', icon: '🌩️', name: t('lightningName'), desc: t('lightningDesc'), maxLevel: 5, apply: () => player.lightningLevel++ },
+            { id: 'frost', icon: '❄️', name: t('frostName'), desc: t('frostDesc'), maxLevel: 5, apply: () => player.frostLevel++ },
+            { id: 'meteor', icon: '☄️', name: t('meteorName'), desc: t('meteorDesc'), maxLevel: 5, apply: () => player.meteorLevel++ },
         ];
         
         const superPowers = [
-            { icon: '💣', name: 'EXPLOSÃO!', apply: () => {
+            { icon: '💣', name: t('bomb'), apply: () => {
                 enemies.forEach(e => e.health = 0);
                 enemyProjectiles = []; hazards = [];
                 resolveDefeatedEnemies();
                 addRing(player.x, player.y, Math.max(canvas.width, canvas.height), '#ffbf70', 900);
                 shake(14);
             }},
-            { icon: '🛡️', name: 'ESCUDO!', apply: () => {
+            { icon: '🛡️', name: t('shield'), apply: () => {
                 player.shieldUntil = game.time + 8000;
             }},
-            { icon: '💖', name: 'CURA TOTAL!', apply: () => {
+            { icon: '💖', name: t('fullHeal'), apply: () => {
                 player.health = player.maxHealth;
             }},
-            { icon: '🔥', name: 'FÚRIA!', apply: () => {
+            { icon: '🔥', name: t('fury'), apply: () => {
                 player.furyUntil = game.time + 10000;
             }},
-            { icon: '🌀', name: 'PROJÉTEIS!', apply: () => {
+            { icon: '🌀', name: t('extraProjectiles'), apply: () => {
                 player.projectileUntil = game.time + 15000;
             }},
-            { icon: '⏳', name: 'TEMPO CONGELADO!', apply: () => {
+            { icon: '⏳', name: t('freeze'), apply: () => {
                 player.freezeUntil = game.time + 6000;
                 addRing(player.x, player.y, Math.max(canvas.width, canvas.height), '#92e6ff', 1000);
             }},
@@ -971,13 +1097,13 @@
 
         const temporaryPowerups = [
             { icon: '💎', name: '+XP', color: '#00ffff', apply: () => player.xp += 30 },
-            { icon: '⚡', name: 'Tiro Rápido', color: '#ffff00', apply: () => {
+            { icon: '⚡', name: t('rapidFire'), color: '#ffff00', apply: () => {
                 player.rapidUntil = game.time + 5000;
             }},
-            { icon: '🌟', name: 'Estrela', color: '#ffffff', apply: () => {
+            { icon: '🌟', name: t('star'), color: '#ffffff', apply: () => {
                 enemies.forEach(e => e.health *= 0.5);
             }},
-            { icon: '💰', name: 'Moedas', color: '#ffd700', apply: () => {
+            { icon: '💰', name: t('coins'), color: '#ffd700', apply: () => {
                 for(let i=0; i<5; i++) {
                     xpOrbs.push({
                         x: player.x + (Math.random()-0.5)*100,
@@ -986,7 +1112,7 @@
                     });
                 }
             }},
-            { icon: '🧲', name: 'Ímã Total', color: '#bb9aff', apply: () => {
+            { icon: '🧲', name: t('vacuum'), color: '#bb9aff', apply: () => {
                 player.vacuumUntil = game.time + 6000;
                 addRing(player.x, player.y, 300, '#bb9aff', 650);
             }},
@@ -1065,7 +1191,7 @@
                     if (upgrade) {
                         const div = document.createElement('div');
                         div.className = 'power-indicator';
-                        div.title = `${upgrade.name}: nível ${level}`;
+                        div.title = t('upgradeLevel', { name: upgrade.name, level });
                         div.innerHTML = `${upgrade.icon} <span class="lvl">Lv${level}</span>`;
                         container.appendChild(div);
                     }
@@ -1097,11 +1223,7 @@
                 // Update instructions for touch
                 const instructions = document.querySelector('.instructions');
                 if (instructions) {
-                    instructions.innerHTML = `
-                        <span>JOYSTICK</span> para mover<br>
-                        <span>TOQUE</span> na barra para ajustar inimigos<br>
-                        <span>F</span> ou <span>F11</span> para tela cheia
-                    `;
+                    instructions.innerHTML = t('touchInstructions');
                 }
 
                 setupJoystickListeners();
@@ -1230,6 +1352,7 @@
             document.getElementById('upgradeScreen').style.display = 'none';
             document.getElementById('pauseScreen').style.display = 'none';
             document.getElementById('pauseBtn').textContent = '⏸️';
+            document.getElementById('pauseBtn').setAttribute('aria-label', t('pause'));
 
             initGame();
             gameRunning = true;
@@ -1251,6 +1374,7 @@
             syncMusic();
             document.getElementById('pauseScreen').style.display = game.paused ? 'flex' : 'none';
             document.getElementById('pauseBtn').textContent = game.paused ? '▶️' : '⏸️';
+            document.getElementById('pauseBtn').setAttribute('aria-label', t(game.paused ? 'resume' : 'pause'));
 
             // Request fullscreen again when resuming
             if (!game.paused && !document.fullscreenElement && document.documentElement.requestFullscreen) {
@@ -1548,7 +1672,7 @@
         
         function showWave() {
             const el = document.getElementById('waveDisplay');
-            el.textContent = `🌊 WAVE ${wave} 🌊`;
+            el.textContent = t('waveAnnouncement', { wave });
             el.classList.remove('show');
             void el.offsetWidth; // reflow
             el.classList.add('show');
@@ -1623,15 +1747,10 @@
             stopMusicVoices();
             stopSfxVoices();
             document.getElementById('gameOverScreen').style.display = 'flex';
-            document.getElementById('finalStats').innerHTML = `
-                ⏱️ Tempo: ${formatTime(game.time)}<br>
-                💀 Kills: ${game.kills}<br>
-                🌊 Wave: ${wave}<br>
-                🔥 Max Combo: ${maxCombo}<br>
-                👹 Bosses: ${game.bossesKilled}<br>
-                🎯 Desafios: ${game.challengesSurvived}<br>
-                ⭐ Level: ${player.level}
-            `;
+            document.getElementById('finalStats').innerHTML = t('finalStats', {
+                time: formatTime(game.time), kills: game.kills, wave, combo: maxCombo,
+                bosses: game.bossesKilled, challenges: game.challengesSurvived, level: player.level
+            });
         }
         
         function formatTime(ms) {
@@ -1750,17 +1869,17 @@
             showWave(); playSound('levelup');
             if (wave % 3 !== 0) return;
             const events = [
-                { name: 'HORDA!', effect: () => { game.hordeRemaining += 15 + Math.floor(spawnMultiplier * 3); } },
-                { name: 'ELITE!', effect: () => {
+                { name: t('horde'), effect: () => { game.hordeRemaining += 15 + Math.floor(spawnMultiplier * 3); } },
+                { name: t('elite'), effect: () => {
                     for (const variant of [6, 8, 9]) {
                         const elite = spawnEnemy(variant);
                         if (elite) { elite.health *= 1.8; elite.maxHealth = elite.health; elite.radius *= 1.15; elite.xp = 8; }
                     }
                 } },
-                { name: 'CHUVA DE XP!', effect: () => {
+                { name: t('xpRain'), effect: () => {
                     for (let i = 0; i < 30; i++) xpOrbs.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, xp: 3, radius: 7 });
                 } },
-                { name: 'ARSENAL EXTRA!', effect: () => { spawnTreasure(); spawnTreasure(); } }
+                { name: t('arsenal'), effect: () => { spawnTreasure(); spawnTreasure(); } }
             ];
             const event = events[Math.floor(Math.random() * events.length)];
             event.effect();
@@ -1925,9 +2044,9 @@
         }
 
         const challengeTypes = [
-            { name: 'FOGO CRUZADO', hint: 'Desvie dos tiros e elimine as sentinelas.', variants: [6, 7], duration: 18000 },
-            { name: 'ZONA DE CERCO', hint: 'Saia dos círculos vermelhos antes do impacto.', variants: [9, 3], duration: 20000 },
-            { name: 'CAÇADA', hint: 'Espere a mira travar e desvie das investidas.', variants: [8, 4], duration: 18000 }
+            { name: t('crossfire'), hint: t('crossfireHint'), variants: [6, 7], duration: 18000 },
+            { name: t('siege'), hint: t('siegeHint'), variants: [9, 3], duration: 20000 },
+            { name: t('hunt'), hint: t('huntHint'), variants: [8, 4], duration: 18000 }
         ];
 
         function updateChallenges() {
@@ -1951,13 +2070,13 @@
                 game.challengeMessageUntil = now + 3000;
                 spawnTreasure();
                 player.health = Math.min(player.maxHealth, player.health + 10);
-                el.textContent = 'DESAFIO SUPERADO · +10 HP + TESOURO';
+                el.textContent = t('challengeComplete');
                 el.setAttribute('data-phase', 'complete');
                 playSound('powerup');
                 return;
             }
             const warning = now < challenge.startsAt;
-            const label = `${warning ? 'PREPARE-SE · ' : ''}${challenge.name} · ${Math.ceil(((warning ? challenge.startsAt : challenge.endsAt) - now) / 1000)}s`;
+            const label = `${warning ? t('getReady') : ''}${challenge.name} · ${Math.ceil(((warning ? challenge.startsAt : challenge.endsAt) - now) / 1000)}s`;
             if (challenge.label !== label) {
                 el.innerHTML = `${label}<small>${challenge.hint}</small>`;
                 el.setAttribute('data-phase', warning ? 'warning' : 'active');
@@ -2349,7 +2468,7 @@
                 ctx.setLineDash([8, 5]); ctx.beginPath(); ctx.arc(0, 0, h.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
                 ctx.beginPath(); ctx.arc(0, 0, h.radius * h.remaining / h.duration, 0, Math.PI * 2); ctx.stroke();
                 ctx.beginPath(); ctx.moveTo(-9, 0); ctx.lineTo(9, 0); ctx.moveTo(0, -9); ctx.lineTo(0, 9); ctx.stroke();
-                ctx.fillStyle = '#ffd2c0'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('IMPACTO', 0, -h.radius - 9);
+                ctx.fillStyle = '#ffd2c0'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(t('impact'), 0, -h.radius - 9);
                 ctx.restore();
             }
             for (const e of enemies) {
@@ -2458,7 +2577,7 @@
                 if (enemy.isBoss) {
                     ctx.save(); ctx.translate(enemy.x, enemy.y); ctx.rotate(time * 0.35);
                     ctx.strokeStyle = '#ff8cce88'; ctx.lineWidth = 2; ctx.setLineDash([14, 16]); ctx.beginPath(); ctx.arc(0, 0, enemy.radius + 9, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-                    ctx.fillStyle = '#ffcee9'; ctx.font = 'bold 11px Orbitron, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(`BOSS · ${enemy.bossLevel}`, enemy.x, enemy.y - enemy.radius - 23);
+                    ctx.fillStyle = '#ffcee9'; ctx.font = 'bold 11px Orbitron, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(t('bossLevel', { level: enemy.bossLevel }), enemy.x, enemy.y - enemy.radius - 23);
                 }
             }
             if (player.orbitLevel) {

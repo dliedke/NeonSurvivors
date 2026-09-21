@@ -1,147 +1,149 @@
 # ⚡ Neon Survivors ⚡
 
-Um jogo estilo Vampire Survivors feito em HTML/CSS/JavaScript puro. Sobreviva às hordas de inimigos, colete XP, evolua seus poderes e derrote os bosses!
+A Vampire Survivors-style game built with plain HTML, CSS, and JavaScript. Survive hordes of enemies, collect XP, upgrade your powers, and defeat bosses!
 
-## 🎮 Como Jogar
+## 🎮 How to Play
 
-- **Jogar online:** <a href="https://dliedke.github.io/NeonSurvivors/neon-survivors.html" target="_blank" rel="noopener noreferrer">Abrir Neon Survivors</a>
+- **Play online:** <a href="https://dliedke.github.io/NeonSurvivors/neon-survivors.html" target="_blank" rel="noopener noreferrer">Open Neon Survivors</a>
 
-Abra o arquivo `neon-survivors.html` em qualquer navegador moderno. Não requer instalação!
+Open `neon-survivors.html` in any modern browser. No installation required!
 
-### 🎯 Melhor Experiência
+The game automatically selects **English or Portuguese** using your browser's language preferences. Regional variants such as `en-US`, `en-GB`, `pt-BR`, and `pt-PT` are supported. The first supported language in your preference list is used; if none is supported, the game defaults to English. Reload the page after changing your browser's preferred languages.
 
-**💡 RECOMENDADO:** Jogue no PC com controle (Xbox/PlayStation) para a melhor experiência de gameplay!
+### 🎯 Best Experience
 
-O jogo entra automaticamente em **tela cheia** ao iniciar (pressione ESC ou F11 para sair).
+**💡 RECOMMENDED:** Play on a PC with a controller (Xbox/PlayStation) for the best gameplay experience!
 
-### Controles
+The game automatically enters **fullscreen** when you start (press ESC or F11 to exit).
 
-| Ação | Teclado | Controle | Mobile |
-|------|---------|----------|--------|
-| Mover | `WASD` ou `Setas` | Analógico esquerdo | 🕹️ Joystick virtual |
-| Pausar | `P` ou `ESC` | - | Botão ⏸️ |
-| Tela cheia | `F` ou `F11` | - | Automático |
-| Ajustar dificuldade | `+` / `-` | 🔼 / 🟥 | Toque na barra AMEAÇA |
-| Selecionar/Confirmar | - | 🅰️ Botão A | Toque nos botões |
-| Navegar upgrades | - | ⬅️ ➡️ D-pad | Toque no upgrade |
-| Música ligada/desligada | `M` ou botão ♫ | - | Botão ♫ |
-| Próxima música | Botão ⏭ | - | Botão ⏭ |
-| Volume / silêncio dos efeitos | Menu SOM | - | Menu SOM |
+### Controls
 
-### 📱 Suporte Mobile
+| Action | Keyboard | Controller | Mobile |
+|--------|----------|------------|--------|
+| Move | `WASD` or `Arrow keys` | Left stick | 🕹️ Virtual joystick |
+| Pause | `P` or `ESC` | - | ⏸️ button |
+| Fullscreen | `F` or `F11` | - | Automatic |
+| Adjust difficulty | `+` / `-` | 🔼 / 🟥 | Tap the THREAT bar |
+| Select/Confirm | - | 🅰️ A button | Tap buttons |
+| Navigate upgrades | - | ⬅️ ➡️ D-pad | Tap an upgrade |
+| Toggle music | `M` or ♫ button | - | ♫ button |
+| Next track | ⏭ button | - | ⏭ button |
+| Effects volume / mute | SOUND menu | - | SOUND menu |
 
-O jogo detecta automaticamente dispositivos touch e exibe:
-- **Joystick virtual** no canto inferior esquerdo para movimento
-- **Barra de ameaça touch-friendly** - toque diretamente na posição desejada
-- **Controles otimizados** - velocidade reduzida para melhor controle
-- **Tela cheia automática** ao iniciar e retomar
+### 📱 Mobile Support
+
+The game automatically detects touch devices and displays:
+- **Virtual joystick** in the bottom-left corner for movement
+- **Touch-friendly threat bar** — tap the desired position directly
+- **Optimized controls** — reduced movement speed for better control
+- **Automatic fullscreen** when starting and resuming
 
 ## ✨ Features
 
-### 🎯 Sistema de Combate
-- **Ataque automático** - Mira nos inimigos mais próximos
-- **Sistema de crítico** - Chance de causar dano 2x
-- **Vampirismo** - Recupere vida ao matar inimigos
-- **Explosão** - Inimigos explodem ao morrer, causando dano em área
+### 🎯 Combat System
+- **Automatic attacks** — Target the nearest enemies
+- **Critical hits** — Chance to deal 2x damage
+- **Lifesteal** — Recover health by killing enemies
+- **Explosions** — Enemies explode on death, dealing area damage
 
-### ⬆️ Upgrades Permanentes (18 tipos)
-- ⚔️ **Dano** - Mais dano por disparo
-- 🔫 **Cadência** - Atira mais rápido
-- 🎯 **Projétil** - +2 projéteis simultâneos
-- 💨 **Velocidade** - Move mais rápido (desabilitado em mobile)
-- ❤️ **Vida** - Aumenta vida máxima
-- 🧲 **Ímã** - Coleta XP de mais longe
-- 🚀 **Proj. Rápido** - Projéteis mais velozes
-- 💚 **Regeneração** - Recupera vida ao longo do tempo
-- 🔥 **Penetração** - Projéteis atravessam inimigos
-- 🧛 **Vampirismo** - +3 HP por kill; reserva de cura de 8% da vida máxima, recuperada a cada segundo, para manter o desafio nas hordas
-- ⚡ **Multi-Hit** - Projéteis ricocheteiam
-- 💥 **Explosão** - Inimigos explodem ao morrer
-- 🎯 **Crítico** - 15% chance de dano 2x
-- 🧲 **XP++** - Orbs valem 20% mais XP
-- 🛰️ **Drones Orbitais** - Dois drones causam dano por contato; cada evolução adiciona um drone e aumenta o dano
-- 🌩️ **Raio em Cadeia** - Descargas automáticas saltam entre inimigos próximos
-- ❄️ **Pulso Glacial** - Onda em área causa dano e reduz a velocidade dos inimigos por 2,2s
-- ☄️ **Meteoros** - Marca alvos e bombardeia a área após um breve aviso visual
+### ⬆️ Permanent Upgrades (18 Types)
+- ⚔️ **Damage** — More damage per shot
+- 🔫 **Fire Rate** — Shoot faster
+- 🎯 **Projectiles** — +2 simultaneous projectiles
+- 💨 **Speed** — Move faster (disabled on mobile)
+- ❤️ **Health** — Increase maximum health
+- 🧲 **Magnet** — Collect XP from farther away
+- 🚀 **Fast Shots** — Faster projectiles
+- 💚 **Regeneration** — Recover health over time
+- 🔥 **Piercing** — Projectiles pass through enemies
+- 🧛 **Lifesteal** — +3 HP per kill; a healing pool of 8% of maximum health replenishes every second to keep hordes challenging
+- ⚡ **Multi-Hit** — Projectiles ricochet
+- 💥 **Explosion** — Enemies explode on death
+- 🎯 **Critical Hit** — 15% chance to deal 2x damage
+- 🧲 **XP++** — Orbs grant 20% more XP
+- 🛰️ **Orbital Drones** — Two drones deal contact damage; each upgrade adds a drone and increases damage
+- 🌩️ **Chain Lightning** — Automatic discharges jump between nearby enemies
+- ❄️ **Frost Pulse** — An area wave damages enemies and slows them for 2.2 seconds
+- ☄️ **Meteors** — Mark targets and bombard the area after a brief visual warning
 
-Os quatro novos poderes evoluem até o nível 5. Uma opção desses poderes aparece em cada seleção enquanto houver evoluções disponíveis. Kills de todos os poderes contam para XP, combos, waves e vampirismo.
+The four new powers can be upgraded to level 5. One of these powers appears in every upgrade selection while upgrades remain available. Kills from all powers count toward XP, combos, waves, and lifesteal.
 
-### 👹 Inimigos e Bosses
-- **10 tipos de inimigos** com características únicas:
-  - 🔴 Pequeno rápido (2 XP)
-  - 🟠 Médio resistente (4 XP)
-  - 🟡 Veloz frágil (2 XP)
-  - 🔵 Tanque lento (5 XP)
-  - 🟣 Veloz elite (2 XP)
-  - 🔷 Médio balanceado (2 XP)
-  - 🎯 Sentinela — mantém distância, trava a mira e dispara após um aviso (4 XP)
-  - 🔥 Artilheiro — três tiros em leque, com a trajetória sinalizada (5 XP)
-  - ⚡ Investidor — prepara uma investida rápida em direção fixa; desvie depois que a mira travar (3 XP)
-  - 💣 Bombardeiro — marca uma área antes de causar uma explosão; saia do círculo vermelho (6 XP)
-- Inimigos especiais entram após 18s; a partir de 300% de ameaça podem aparecer desde o início
-- Tiros inimigos são losangos laranja, diferentes dos disparos verdes do jogador. Escudo bloqueia o dano; congelamento para tiros, preparações e explosões; a bomba limpa os projéteis e áreas perigosas
-- **Bosses** - Aparecem a cada 45 segundos
-  - Tamanho limitado a 90px (não ficam gigantes demais!)
-  - Dano e vida aumentam com o tempo e a ameaça selecionada
-  - Disparam anéis de projéteis depois de um aviso visual; a numeração avança mesmo se o anterior ainda estiver vivo
+### 👹 Enemies and Bosses
+- **10 enemy types** with unique characteristics:
+  - 🔴 Small and fast (2 XP)
+  - 🟠 Medium and tough (4 XP)
+  - 🟡 Fast and fragile (2 XP)
+  - 🔵 Slow tank (5 XP)
+  - 🟣 Fast elite (2 XP)
+  - 🔷 Balanced medium enemy (2 XP)
+  - 🎯 Sentry — Keeps its distance, locks its aim, and fires after a warning (4 XP)
+  - 🔥 Artillery — Fires three shots in a fan, with their trajectories shown in advance (5 XP)
+  - ⚡ Charger — Prepares a fast charge in a fixed direction; dodge after its aim locks (3 XP)
+  - 💣 Bomber — Marks an area before an explosion; leave the red circle (6 XP)
+- Special enemies arrive after 18 seconds; at 300% threat or higher, they can appear from the start
+- Enemy shots are orange diamonds, distinct from the player's green projectiles. Shields block damage; time freeze stops shots, attack preparations, and explosions; bombs clear projectiles and hazardous areas
+- **Bosses** — Appear every 45 seconds
+  - Size capped at 90px (they won't get too huge!)
+  - Damage and health increase with time and the selected threat level
+  - Fire rings of projectiles after a visual warning; boss numbering advances even if the previous boss is still alive
 
 ### 💎 Power-ups
 
-**Tesouros Grandes** (aparecem a cada 15-25s):
-- 💣 **Explosão** - Mata todos os inimigos na tela
-- 🛡️ **Escudo** - Invencibilidade por 8s
-- 💖 **Cura Total** - Restaura 100% da vida
-- 🔥 **Fúria** - Dano x3 por 10s
-- 🌀 **Projéteis** - +5 projéteis por 15s
-- ⏳ **Tempo Congelado** - Congela inimigos por 6s; bosses ficam bastante lentos
+**Large Treasures** (appear every 15–25 seconds):
+- 💣 **Explosion** — Kills all enemies on screen
+- 🛡️ **Shield** — Invincibility for 8 seconds
+- 💖 **Full Heal** — Restores 100% health
+- 🔥 **Fury** — 3x damage for 10 seconds
+- 🌀 **Projectiles** — +5 projectiles for 15 seconds
+- ⏳ **Time Freeze** — Freezes enemies for 6 seconds; bosses are greatly slowed
 
-**Mini Power-ups** (aparecem a cada 8-12s):
-- 💎 **+XP** - Ganho instantâneo de 30 XP
-- ⚡ **Tiro Rápido** - Cadência aumentada por 5s
-- 🌟 **Estrela** - Reduz vida de todos inimigos pela metade
-- 💰 **Moedas** - Spawna 5 orbs de XP
-- 🧲 **Ímã Total** - Atrai todo o XP da arena por 6s
+**Mini Power-ups** (appear every 8–12 seconds):
+- 💎 **+XP** — Instantly gain 30 XP
+- ⚡ **Rapid Fire** — Increased fire rate for 5 seconds
+- 🌟 **Star** — Halves all enemies' health
+- 💰 **Coins** — Spawns 5 XP orbs
+- 🧲 **Global Magnet** — Attracts all XP in the arena for 6 seconds
 
-Os bônus temporários param junto com a pausa e são limpos ao reiniciar. A duração restante aparece acima da barra de XP.
+Temporary bonuses stop counting down while paused and are cleared on restart. Their remaining duration appears above the XP bar.
 
-### 🔥 Sistema de Combo (ILIMITADO!)
-- Mate inimigos de perto (< 350px) para aumentar o combo
-- Timer de 6s para manter o combo ativo; depois, o combo cai pela metade a cada 2,5s
-- **Multiplicador ilimitado**: 1.5x → 2x → 2.5x → 3x → ...
-- Progressão: +0.5x a cada 3 kills consecutivos
-- **Sem limite máximo!** Consiga combos épicos para XP massivo
+### 🔥 Combo System (UNLIMITED!)
+- Kill nearby enemies (< 350px) to build your combo
+- A 6-second timer keeps the combo active; afterward, the combo halves every 2.5 seconds
+- **Unlimited multiplier**: 1.5x → 2x → 2.5x → 3x → ...
+- Progression: +0.5x every 3 consecutive kills
+- **No maximum limit!** Build epic combos for massive XP
 
-### 🌊 Sistema de Waves
-- Complete waves matando inimigos
-- Ganhe +15 HP ao completar cada wave
-- **Eventos especiais a cada 3 waves**:
-  - ⚡ **HORDA!** - Uma rajada de inimigos proporcional à configuração de spawn
-  - ⚡ **ELITE!** - 3 inimigos fortes aparecem
-  - ⚡ **CHUVA DE XP!** - 30 orbs de XP pela tela
-  - 🎁 **ARSENAL EXTRA!** - Dois tesouros aparecem na arena
+### 🌊 Wave System
+- Complete waves by killing enemies
+- Gain +15 HP after each wave
+- **Special events every 3 waves**:
+  - ⚡ **HORDE!** — A burst of enemies proportional to the spawn setting
+  - ⚡ **ELITE!** — 3 powerful enemies appear
+  - ⚡ **XP RAIN!** — 30 XP orbs across the screen
+  - 🎁 **EXTRA ARSENAL!** — Two treasures appear in the arena
 
-### 🎯 Desafios durante a partida
+### 🎯 In-game Challenges
 
-O primeiro aviso surge aos 25s, com 3s de preparação. Os desafios duram de 18 a 20s e alternam entre:
+The first warning appears at 25 seconds, with 3 seconds to prepare. Challenges last 18–20 seconds and alternate between:
 
-- **Fogo Cruzado** — reforços de sentinelas e artilheiros
-- **Zona de Cerco** — bombardeiros, tanques e áreas de impacto sinalizadas no chão
-- **Caçada** — investidores e inimigos velozes para forçar mudanças de direção
+- **Crossfire** — Sentry and artillery reinforcements
+- **Siege Zone** — Bombers, tanks, and impact zones marked on the ground
+- **The Hunt** — Chargers and fast enemies force you to change direction
 
-Sobreviver rende +10 HP e um tesouro. O próximo aviso chega após 30s de intervalo. A quantidade de reforços acompanha a ameaça, e todos os cronômetros param durante pausa e seleção de evolução.
+Surviving awards +10 HP and a treasure. The next warning arrives after a 30-second break. Reinforcement counts scale with threat, and all timers stop during pauses and upgrade selection.
 
-### 🎨 Arena Neon
+### 🎨 Neon Arena
 
-- Arena com paralaxe em três camadas: anéis distantes, circuitos e partículas, com movimento ambiente e resposta ao deslocamento do piloto
-- Movimento contínuo ao atravessar as bordas; pausa e preferência de movimento reduzido são respeitadas
-- Piloto, dez tipos de inimigos e bosses com armaduras e silhuetas próprias
-- Rastros de projéteis, cristais de XP, ondas de impacto e efeitos próprios para cada poder
-- Interface renovada, cartões de evolução e controles adaptados para telas pequenas
-- Cenário e sprites desenhados em cache; partículas e efeitos limitados para manter as hordas leves
+- Three-layer parallax arena: distant rings, circuits, and particles, with ambient motion and a response to the pilot's movement
+- Continuous motion across screen edges; respects pauses and reduced-motion preferences
+- Pilot, ten enemy types, and bosses with distinct armor and silhouettes
+- Projectile trails, XP crystals, shockwaves, and unique effects for each power
+- Refreshed interface, upgrade cards, and controls adapted for small screens
+- Cached scenery and sprites; capped particles and effects to keep hordes running smoothly
 
 ### 🎵 Neon Radio
 
-Cinco composições instrumentais originais em synthwave, sintetizadas no navegador com bateria, baixo, acordes e melodias:
+Five original instrumental synthwave compositions, synthesized in the browser with drums, bass, chords, and melodies:
 
 1. **Midnight Circuit** — 112 BPM
 2. **Electric Bloom** — 124 BPM
@@ -149,53 +151,55 @@ Cinco composições instrumentais originais em synthwave, sintetizadas no navega
 4. **Plasma Rush** — 132 BPM
 5. **Starlight Escape** — 118 BPM
 
-A playlist embaralha as cinco faixas sem repetir até terminar a rodada. A música começa ao jogar e acompanha a pausa, a evolução e o fim da partida. Use **M / ♫** para silenciar, **⏭** para trocar e a barra de volume quando exibida; volume e silêncio ficam salvos no navegador. Não há downloads de áudio nem dependências externas para as músicas.
+The playlist shuffles all five tracks without repeating until the round is complete. Music starts when you play and follows pauses, upgrade selection, and game over. Use **M / ♫** to mute, **⏭** to skip, and the volume slider when visible; volume and mute preferences are saved in the browser. Music requires no audio downloads or external dependencies.
 
-### 🎛️ Recursos Adicionais
-- **Dificuldade ajustável de 20% a 1000%** - A barra AMEAÇA altera a quantidade de inimigos; acima de 100%, também aumenta a resistência, o dano e a frequência de ataques dos novos inimigos. Ajuste com `+` / `-`, controle, mouse ou toque; com a barra focada, use as setas, `Home` e `End`
-- **Pressão progressiva** - Inimigos ganham resistência ao longo da partida, com limites de velocidade e de entidades para preservar a possibilidade de desviar e o desempenho
-- **Progressão de níveis balanceada** - Multiplicador reduzido (1.35x) e XP dos inimigos aumentado
-- **Sons mais suaves** - Timbres senoidais e triangulares, filtro de agudos, entradas e saídas suaves e compressão; efeitos frequentes têm intervalo mínimo e limite de vozes simultâneas
-- **Volume independente dos efeitos** - Começa em 28%; ajuste ou silencie no menu **SOM**, inclusive no mobile. Preferência salva no navegador, separada da música
-- **Screen shake** - Feedback visual ao tomar dano
-- **Tela cheia automática** - Entra em fullscreen ao iniciar
-- **Pausa ao trocar de aba** - Mantém a partida e os bônus protegidos enquanto o jogo está em segundo plano
+### 🎛️ Additional Features
+- **Adjustable difficulty from 20% to 1000%** — The THREAT bar changes enemy counts; above 100%, it also increases the health, damage, and attack frequency of newly spawned enemies. Adjust with `+` / `-`, a controller, mouse, or touch; when the bar is focused, use the arrow keys, `Home`, and `End`
+- **Progressive pressure** — Enemies gain health throughout the run, with speed and entity limits to preserve room for dodging and maintain performance
+- **Balanced level progression** — Reduced multiplier (1.35x) and increased enemy XP
+- **Softer sounds** — Sine and triangle tones, a high-frequency filter, smooth fades, and compression; frequent effects have a minimum interval and a simultaneous voice limit
+- **Independent effects volume** — Starts at 28%; adjust or mute in the **SOUND** menu, including on mobile. Preferences are saved in the browser separately from music
+- **Screen shake** — Visual feedback when taking damage
+- **Automatic fullscreen** — Enters fullscreen when starting
+- **Pause on tab switch** — Protects your run and bonuses while the game is in the background
+- **Browser language detection** — English and Portuguese menus, instructions, upgrades, challenges, and accessibility labels
+- **Embedded page icon** — A neon lightning favicon included in the HTML file
 
-## 🏆 Dicas
+## 🏆 Tips
 
-1. **Jogue no PC com controle** - Melhor experiência de gameplay!
-2. **Fique em movimento** - Parar é morrer!
-3. **Mantenha o combo** - Mate de perto para multiplicador ILIMITADO de XP
-4. **Priorize upgrades de projétil** - Mais projéteis = mais kills
-5. **Pegue os mini power-ups** - Aparecem frequentemente e ajudam muito
-6. **Cuidado com os bosses** - Eles dão muito mais dano!
-7. **Aproveite os eventos especiais** - Ondas a cada 3 waves trazem oportunidades únicas
-8. **Vampirismo + Explosão** - Combo poderoso para sobrevivência
-9. **XP++ + Combo alto** - Maximize seu ganho de experiência
+1. **Play on a PC with a controller** — Best gameplay experience!
+2. **Keep moving** — Standing still means death!
+3. **Maintain your combo** — Kill nearby enemies for an UNLIMITED XP multiplier
+4. **Prioritize projectile upgrades** — More projectiles = more kills
+5. **Grab mini power-ups** — They appear frequently and help a lot
+6. **Watch out for bosses** — They deal much more damage!
+7. **Take advantage of special events** — Events every 3 waves bring unique opportunities
+8. **Lifesteal + Explosion** — A powerful survival combination
+9. **XP++ + High Combo** — Maximize your experience gains
 
-## 🛠️ Tecnologias
+## 🛠️ Technologies
 
-- **HTML5 Canvas** - Renderização do jogo
-- **CSS3** - Interface e efeitos visuais
-- **JavaScript Vanilla** - Lógica do jogo (um único arquivo!)
-- **Web Audio API** - Sons procedurais
-- **Gamepad API** - Suporte a controles
-- **Fullscreen API** - Tela cheia automática
+- **HTML5 Canvas** — Game rendering
+- **CSS3** — Interface and visual effects
+- **Vanilla JavaScript** — Game logic (a single file!)
+- **Web Audio API** — Procedural sound
+- **Gamepad API** — Controller support
+- **Fullscreen API** — Automatic fullscreen
 
-## 📁 Estrutura
+## 📁 Structure
 
 ```
-neon-survivors.html  # Arquivo único com todo o jogo
-README.md            # Este arquivo
-tests/gameplay.test.cjs # Regressões de combate, dificuldade, desafios, áudio e paralaxe
+neon-survivors.html    # Single file containing the entire game, translations, and icon
+README.md              # This file
+tests/gameplay.test.cjs # Combat, difficulty, challenge, audio, parallax, and language regression tests
 ```
 
-Para executar os testes de lógica, com Node.js instalado: `node --test tests/gameplay.test.cjs`. O jogo continua funcionando diretamente pelo HTML, sem instalação de pacotes.
+To run the logic tests with Node.js installed: `node --test tests/gameplay.test.cjs`. The game still runs directly from the HTML file without installing packages.
 
-## 🎨 Créditos
+## 🎨 Credits
 
-Desenvolvido por [dliedke](https://github.com/dliedke).
+Developed by [dliedke](https://github.com/dliedke).
 
 ---
 
-**Divirta-se! 🎮**
+**Have fun! 🎮**

@@ -8,27 +8,39 @@ const vm = require('node:vm');
 const html = fs.readFileSync(path.join(__dirname, '..', 'neon-survivors.html'), 'utf8');
 const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 
-function createGame({ reducedMotion = false } = {}) {
+function createGame({ reducedMotion = false, languages = ['pt-BR'], language = 'pt-BR', touch = false } = {}) {
     function element() {
         const classes = new Set();
+        const attributes = new Map();
         return {
             style: {}, value: '', textContent: '', innerHTML: '', children: [],
             classList: { add: key => classes.add(key), remove: key => classes.delete(key), toggle: (key, on) => on ? classes.add(key) : classes.delete(key) },
             appendChild(child) { this.children.push(child); },
-            setAttribute() {}, addEventListener() {}, getContext() { return {}; },
+            setAttribute(key, value) { attributes.set(key, String(value)); },
+            getAttribute(key) { return attributes.get(key) ?? null; },
+            addEventListener() {}, getContext() { return {}; },
             click() { this.onclick?.(); }
         };
     }
     const elements = new Map();
+    const staticElements = [...html.matchAll(/<[a-z][^>]*>/g)].map(([tag]) => {
+        const node = element();
+        for (const [, key, value] of tag.matchAll(/([\w-]+)="([^"]*)"/g)) node.setAttribute(key, value);
+        if (node.getAttribute('id')) elements.set(node.getAttribute('id'), node);
+        return node;
+    });
     const document = {
         hidden: false, body: element(), documentElement: element(),
         getElementById(id) { if (!elements.has(id)) elements.set(id, element()); return elements.get(id); },
-        createElement: element, querySelector: element, addEventListener() {}
+        createElement: element,
+        querySelector(selector) { return staticElements.find(node => node.getAttribute('class') === selector.slice(1)); },
+        querySelectorAll(selector) { return staticElements.filter(node => node.getAttribute(selector.slice(1, -1)) !== null); },
+        addEventListener() {}
     };
     const context = vm.createContext({
         document, console, performance,
         window: { innerWidth: 1280, innerHeight: 720, addEventListener() {}, matchMedia: () => ({ matches: reducedMotion }) },
-        navigator: { maxTouchPoints: 0, getGamepads: () => [] },
+        navigator: { languages, language, maxTouchPoints: touch ? 1 : 0, getGamepads: () => [] },
         localStorage: { getItem: () => null, setItem() {} },
         setInterval() {}, setTimeout() {}, requestAnimationFrame() {}, cancelAnimationFrame() {}
     });
@@ -43,6 +55,74 @@ function createGame({ reducedMotion = false } = {}) {
         }
     `);
     return run;
+}
+
+test('language selection honors browser preference order, regional variants and English fallback', () => {
+    const cases = [
+        { languages: ['en-US', 'pt-BR'], expected: 'en' },
+        { languages: ['pt-PT', 'en-GB'], expected: 'pt-BR' },
+        { languages: ['fr-FR', 'en-GB', 'pt-BR'], expected: 'en' },
+        { languages: ['fr-FR', 'PT-br', 'en'], expected: 'pt-BR' },
+        { languages: ['en'], expected: 'en' },
+        { languages: ['pt'], expected: 'pt-BR' },
+        { languages: ['de-DE', 'ja-JP'], language: 'de-DE', expected: 'en' },
+        { languages: [], language: 'en-GB', expected: 'en' },
+        { languages: null, language: 'pt-PT', expected: 'pt-BR' },
+        { languages: null, language: null, expected: 'en' }
+    ];
+    for (const { expected, ...preferences } of cases) {
+        const run = createGame(preferences);
+        assert.equal(run('document.documentElement.lang'), expected, JSON.stringify(preferences));
+    }
+});
+
+for (const locale of ['en-US', 'pt-BR']) {
+    const english = locale === 'en-US';
+    test(`${locale} localizes menus, accessibility, upgrades, challenge phases and results`, () => {
+        const run = createGame({ languages: [locale] });
+        assert.equal(run("document.getElementById('startBtn').innerHTML"), english ? 'ENTER THE ARENA →' : 'ENTRAR NA ARENA →');
+        assert.match(run("document.querySelector('.instructions').innerHTML"), english ? /ARROW KEYS/ : /SETAS/);
+        assert.match(run("document.getElementById('difficultyBar').getAttribute('aria-label')"), english ? /^Difficulty:/ : /^Dificuldade:/);
+        assert.equal(run("document.getElementById('musicToggle').getAttribute('title')"), english ? 'Music (M)' : 'Música (M)');
+        run('music.muted = true; updateMusicUI(); sfx.muted = true; updateSfxUI()');
+        assert.equal(run("document.getElementById('musicToggle').getAttribute('aria-label')"), english ? 'Unmute music' : 'Ativar música');
+        assert.equal(run("document.getElementById('sfxToggle').textContent"), english ? 'Unmute effects' : 'Ativar efeitos');
+        run('music.muted = false; updateMusicUI(); sfx.muted = false; updateSfxUI()');
+        assert.equal(run("document.getElementById('musicToggle').getAttribute('aria-label')"), english ? 'Mute music' : 'Silenciar música');
+        assert.equal(run("document.getElementById('sfxToggle').textContent"), english ? 'Mute effects' : 'Silenciar efeitos');
+
+        assert.equal(run('allUpgrades[0].name'), english ? 'Damage' : 'Dano');
+        assert.equal(run('allUpgrades[0].desc'), english ? '+10 damage' : '+10 de dano');
+        run("powerLevels.damage = 2; updatePowerLevelsUI()");
+        assert.equal(run("document.getElementById('powerLevels').children[0].title"), english ? 'Damage: level 2' : 'Dano: nível 2');
+        run('levelUp()');
+        assert.equal(run('upgradeButtons.length'), 3);
+        assert.ok(run('upgradeButtons.every(button => !button.innerHTML.includes("undefined"))'));
+        run('upgradeButtons[0].click()');
+        assert.equal(run('game.paused'), false);
+
+        run('game.time = game.nextChallenge; updateChallenges()');
+        assert.match(run("document.getElementById('challengeDisplay').innerHTML"), english ? /GET READY · CROSSFIRE/ : /PREPARE-SE · FOGO CRUZADO/);
+        assert.match(run("document.getElementById('challengeDisplay').innerHTML"), english ? /Dodge the shots/ : /Desvie dos tiros/);
+        run('game.time = game.challenge.startsAt; updateChallenges()');
+        assert.doesNotMatch(run("document.getElementById('challengeDisplay').innerHTML"), /GET READY|PREPARE-SE/);
+        run('game.time = game.challenge.endsAt; updateChallenges()');
+        assert.match(run("document.getElementById('challengeDisplay').textContent"), english ? /CHALLENGE COMPLETE/ : /DESAFIO SUPERADO/);
+        run('showWave()');
+        assert.equal(run("document.getElementById('waveDisplay').textContent"), english ? '🌊 WAVE 1 🌊' : '🌊 ONDA 1 🌊');
+
+        run('treasures = [{ x: player.x, y: player.y, radius: 20, rotation: 0, power: superPowers[1] }]; update(16)');
+        assert.equal(run("document.getElementById('powerupDisplay').textContent"), english ? '🛡️ SHIELD!' : '🛡️ ESCUDO!');
+        run('gameOver()');
+        assert.match(run("document.getElementById('finalStats').innerHTML"), english ? /Time:.*Challenges: 1/ : /Tempo:.*Desafios: 1/);
+    });
+
+    test(`${locale} uses localized touch instructions`, () => {
+        const run = createGame({ languages: [locale], touch: true });
+        assert.equal(run('isTouchDevice'), true);
+        assert.match(run("document.querySelector('.instructions').innerHTML"), english ? /TAP.*the threat bar/ : /TOQUE.*na barra/);
+        assert.doesNotMatch(run("document.querySelector('.instructions').innerHTML"), /WASD/);
+    });
 }
 
 test('difficulty caps at 1000% and preserves proportional spawn at 500% and 1000%', () => {
