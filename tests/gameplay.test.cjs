@@ -370,6 +370,26 @@ test('every level gained in one pickup gets an upgrade choice', () => {
     assert.equal(run('Object.values(powerLevels).reduce((sum, level) => sum + level, 0)'), pending);
 });
 
+test('upgrade cards can be selected and confirmed with the keyboard', () => {
+    const run = createGame();
+    run("gameRunning = true; document.getElementById('upgradeScreen').style.display = 'flex'; levelUp()");
+    const press = (key, repeat = false) => run(`handleUpgradeKey({ key: ${JSON.stringify(key)}, repeat: ${repeat}, preventDefault() {} })`);
+    assert.equal(run('selectedUpgrade'), 0);
+    assert.ok(press('ArrowRight'));
+    assert.equal(run('selectedUpgrade'), 1);
+    press('ArrowLeft'); press('ArrowLeft');
+    assert.equal(run('selectedUpgrade'), 2);
+    press('ArrowRight');
+    assert.equal(run('selectedUpgrade'), 0);
+    assert.equal(press('x'), false);
+    assert.equal(run('game.paused'), true);
+    press('Enter', true);
+    assert.equal(run('game.paused'), true);
+    press('Enter');
+    assert.equal(run('game.paused'), false);
+    assert.equal(press('ArrowRight'), false);
+});
+
 test('piercing projectiles never damage the same enemy twice', () => {
     const run = createGame();
     run(`enemies = [testEnemy(player.x + 30, player.y, 100)];

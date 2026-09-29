@@ -1398,6 +1398,7 @@
         document.addEventListener('keydown', e => {
             if (e.target.matches('input, [role="slider"]')) return;
             if (e.key.toLowerCase() === 'm' && !e.repeat) toggleMusic();
+            if (handleUpgradeKey(e)) return;
             keys[e.key.toLowerCase()] = true;
             if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase())) {
                 e.preventDefault();
@@ -1499,6 +1500,23 @@
             } catch (e) { gamepadIndex = null; }
         }
         
+        function handleUpgradeKey(e) {
+            if (!gameRunning || !game.paused || !upgradeButtons.length) return false;
+            if (document.getElementById('upgradeScreen').style.display !== 'flex') return false;
+            const key = e.key.toLowerCase();
+            const step = ['arrowleft', 'arrowup', 'a', 'w'].includes(key) ? -1
+                : ['arrowright', 'arrowdown', 'd', 's'].includes(key) ? 1 : 0;
+            if (step) {
+                selectedUpgrade = (selectedUpgrade + step + upgradeButtons.length) % upgradeButtons.length;
+                updateUpgradeSelection();
+            } else if (key === 'enter' || key === ' ') {
+                // Ignore key repeat so a held key doesn't also pick the next queued level-up
+                if (!e.repeat) upgradeButtons[selectedUpgrade]?.click();
+            } else return false;
+            e.preventDefault();
+            return true;
+        }
+
         function updateUpgradeSelection() {
             upgradeButtons.forEach((btn, i) => {
                 btn.classList.toggle('selected', i === selectedUpgrade);
@@ -1735,6 +1753,7 @@
                     if (game.pendingUpgrades > 0) levelUp();
                     else syncMusic();
                 };
+                btn.onmouseenter = () => { selectedUpgrade = i; updateUpgradeSelection(); };
                 options.appendChild(btn);
                 upgradeButtons.push(btn);
             });
